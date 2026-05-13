@@ -1,0 +1,11 @@
+[
+  {"angle": "Hot Sleeper",      "hook": null},
+  {"angle": "Hot Sleeper",      "hook": "Still waking up drenched?"},
+  {"angle": "Hot Sleeper",      "hook": "Your pillow is making you hotter"},
+  {"angle": "Light Sleeper",    "hook": null},
+  {"angle": "Light Sleeper",    "hook": "Waking up overheated at 3am?"},
+  {"angle": "Light Sleeper",    "hook": "Small change, fewer wake-ups"},
+  {"angle": "Anxious Sleeper",  "hook": null},
+  {"angle": "Anxious Sleeper",  "hook": "Can't switch off at bedtime?"},
+  {"angle": "Anxious Sleeper",  "hook": "Overheating makes anxiety worse"}
+]

@@ -1,0 +1,37 @@
+# Environment — never commit secrets
+.env
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# Scheduled pins (large binary files, already uploaded to Pinterest)
+pins/scheduled/
+
+# Uploaded product images (sourced from Amazon, not ours to commit)
+pins/*/product.jpg
+pins/*/product.png
+
+# Generated PNGs (reproducible from product.jpg + hooks.json)
+pins/*/*.png
+
+# Notion export artefacts
+*.csv
+
+# Claude Code local settings (may contain tokens)
+.claude/
+
+# Editor
+.vscode/
+.idea/
+*.swp
