@@ -16,7 +16,7 @@ What it does:
 Prerequisites:
     1. Create a Pinterest app at https://developers.pinterest.com/apps/
     2. Set redirect URI to: http://localhost:8080/callback
-    3. Request scopes: pins:read, pins:write, boards:read
+    3. Request scopes: pins:read, pins:write, boards:read, boards:write
     4. Have your App ID and App Secret ready
 """
 
@@ -40,7 +40,7 @@ REDIRECT_URI  = "http://localhost:8080/callback"
 AUTH_URL      = "https://www.pinterest.com/oauth/"
 TOKEN_URL     = "https://api.pinterest.com/v5/oauth/token"
 BOARDS_URL    = "https://api.pinterest.com/v5/boards"
-SCOPE         = "pins:read,pins:write,boards:read"
+SCOPE         = "pins:read,pins:write,boards:read,boards:write"
 CALLBACK_PORT = 8080
 
 WORKSPACE = os.path.dirname(os.path.abspath(__file__))
@@ -156,7 +156,7 @@ def main():
     print("Before you start, make sure you have:")
     print("  1. A Pinterest app at https://developers.pinterest.com/apps/")
     print(f"  2. Redirect URI set to: {REDIRECT_URI}")
-    print("  3. Requested scopes: pins:read, pins:write, boards:read\n")
+    print("  3. Requested scopes: pins:read, pins:write, boards:read, boards:write\n")
 
     env = read_env()
 
