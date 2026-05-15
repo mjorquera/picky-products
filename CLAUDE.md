@@ -137,20 +137,41 @@ Pattern: `pin-{1-indexed position}-{angle-slug}-{clean|hook-a|hook-b}.png`
 
 ## Pinterest scheduling
 
-Pins are scheduled via **Pinterest API v5** using `schedule_pins.py`. No browser required.
+Pins are published via **Make** using `schedule_via_make.py`. Make's Pinterest connector has Standard API access, bypassing the Trial restriction on the local Pinterest app.
+
+> **Note:** `schedule_pins.py` (direct API) is kept for when Pinterest Standard access is approved for App ID 1570355. Upgrade request submitted 2026-05-15 — pending video demo.
 
 ### End-to-end flow
 
 1. **Process product** (`process [product name]`) — Cowork creates Notion Distribution records and writes two files to `pins/<product-slug>/`:
-   - `hooks.json` — pin order, angles, hook text (existing)
-   - `schedule_meta.json` — Notion IDs, titles, descriptions, affiliate links, publish_at timestamps (new — see format below)
+   - `hooks.json` — pin order, angles, hook text
+   - `schedule_meta.json` — Notion IDs, titles, descriptions, affiliate links, publish_at timestamps
 2. Mario drops `product.jpg` into `pins/<product-slug>/`
 3. **Generate pins** (`generate pins for [product name]`) — Cowork runs `generate_pins.py`, creates 9 PNGs, updates Notion status → `Image Created`
-4. **Schedule**: `python3 schedule_pins.py <product-slug>`
-   - Reads `schedule_meta.json` + PNGs
-   - Base64-encodes each PNG and POSTs to Pinterest API with `publish_at`
+4. **Push images to GitHub Pages**: `git add docs/pins/<slug>/ && git commit -m "..." && git push`
+5. **Publish**: `python3 schedule_via_make.py <product-slug>`
+   - Sends all 9 records to Make webhook (with GitHub Pages image URLs)
+   - Make iterates via Flow Control → Iterator, calls Pinterest API for each pin
+   - Pins go live **immediately** — no `publish_at` (Make's connector doesn't support it)
    - Updates each Notion Distribution record → Status: `Scheduled`
    - Moves `pins/<product-slug>/` → `pins/scheduled/<product-slug>/`
+
+**Timing:** run `schedule_via_make.py` at the time you want pins to go live. For a spread schedule, run it once per priority time slot across multiple days.
+
+### Make scenario
+
+- **Webhook URL**: `https://hook.eu2.make.com/1ug4xsjoxp8jycg7dungek86smnuuorn`
+- **Flow**: Webhooks (module 2) → Flow Control Iterator (module 5) → Pinterest Make an API Call (module 6)
+- **Pinterest body**:
+```json
+{
+  "board_id": "1063764443174541558",
+  "title": "{{5.title}}",
+  "description": "{{5.description}}",
+  "link": "{{5.affiliate_link}}",
+  "media_source": { "source_type": "image_url", "url": "{{5.image_url}}" }
+}
+```
 
 ### schedule_meta.json format
 
