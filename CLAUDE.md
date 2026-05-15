@@ -177,11 +177,17 @@ Cowork **must write this file** at the end of step 1, after Mario confirms the a
 
 ### One-time setup
 
+**Status: complete as of 2026-05-15.** All `.env` keys are populated and the Notion integration is connected.
+
+For reference if re-doing from scratch:
+
 1. Create a Pinterest app at https://developers.pinterest.com/apps/
+   - App ID: `1570355`
    - Set redirect URI: `http://localhost:8080/callback`
-   - Request scopes: `pins:read`, `pins:write`, `boards:read`
-2. Run `python3 pinterest_auth.py` — follow the prompts to get tokens + board ID saved to `.env`
-3. Create a Notion internal integration at https://www.notion.so/my-integrations
+   - **Do not use the "Generate token" button** on the app page — it omits `pins:write`
+2. Install dependency: `pip3 install requests --break-system-packages` (use `pip3`, not `pip`)
+3. Run `python3 pinterest_auth.py` — follow the prompts to get tokens + board ID saved to `.env`
+4. Create a Notion internal integration at https://www.notion.so/my-integrations
    - Add `NOTION_TOKEN="ntn_xxxx..."` to `.env`
    - Share the Distribution DB with the integration in Notion (open DB → … → Connections)
 
