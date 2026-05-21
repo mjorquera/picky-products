@@ -15,7 +15,6 @@ Picky Products is a Pinterest-focused affiliate marketing side project. The goal
 
 | Tool | Role |
 |---|---|
-| **Cowork** | Orchestration + scheduling |
 | **Apify** (MCP) | Product discovery |
 | **Notion** (MCP) | Source of truth for products and distribution data |
 | **Python + Pillow** | Pin image generation (`generate_pins.py`) |
@@ -28,140 +27,44 @@ Picky Products is a Pinterest-focused affiliate marketing side project. The goal
 
 - **Products DB:** `ddf18096-68b1-8219-bb44-01b7fa5c9611` (collection: `a2c18096-68b1-82cf-87d5-075ab33cfb3c`)
 - **Distribution DB:** `c7718096-68b1-83ea-8ab2-01b6e3a2b2fe` (collection: `34618096-68b1-8227-ade9-0785f977dfae`)
-- Product relation field requires full Notion page URL format as a list string
-- `Enrichment Status` field (Products DB) valid values: `"Empty"`, `"Candidate"`, `"Enriched"`, `"Distributed"` (fully spelled, no typo)
-- Distribution DB `Variant` field: `"A"` = Template A (clean), `"B"` = Template B hook variant 1, `"C"` = Template B hook variant 2
-- Distribution DB `Affiliate Link` is a **rollup** from the Product relation — read-only, auto-populated. Do not attempt to write it directly.
-- Distribution DB `Angle` valid values: `"Hot Sleeper"`, `"Light Sleeper"`, `"Anxious/Insomniac"`. `"Restless Sleeper"` is not a valid select option — use it in pin copy/hooks.json angle labels but map to the nearest valid option (or leave blank) when writing the Angle field in Notion.
+- `Enrichment Status` field (Products DB) valid values: `"Empty"`, `"Candidate"`, `"Enriched"`, `"Distributed"`
+- Distribution DB `Affiliate Link` is a **rollup** from the Product relation — read-only, auto-populated.
+- Distribution DB `Angle` valid values: `"Hot Sleeper"`, `"Light Sleeper"`, `"Anxious/Insomniac"`. `"Restless Sleeper"` is not a valid select option — omit the field when writing Restless Sleeper pins.
 
 ---
 
 ## Content workflow
 
-**Trigger:** Say "process [product name]" in Cowork.
+**Step 1 — Process product**
+Run `/process-product <product name>`. The skill handles everything: looks up the product in Notion, generates copy for 9 pins, creates Distribution DB records, writes `hooks.json` and `schedule_meta.json`, and assigns publish dates at 1 pin/day from a start date you provide.
 
-**Output:** 9 pins per product — 3 angles × 3 pins per angle, plus two local files (`hooks.json` and `schedule_meta.json`) that drive image generation and Pinterest API scheduling.
+**Step 2 — Add product image**
+Drop `product.jpg` into `pins/<product-slug>/` (save the highest-res image from the Amazon listing — right-click the main product photo).
 
-### Step-by-step sequence
+**Step 3 — Generate pin images**
+Say "generate pins for [product name]". Claude runs `generate_pins.py <product-slug>`, saves 9 PNGs to `pins/<product-slug>/`, and updates Notion status → `Image Created`.
 
-**Step 1 — Choose angles.** Pick 3 personas that genuinely fit the product. Common options: Hot Sleeper, Light Sleeper, Anxious Sleeper, Restless Sleeper. A weighted blanket fits anxious/restless/light better than hot. Don't force a persona that doesn't fit.
-
-**Step 2 — Write copy.** For each of the 9 pins, generate title + description following the rules below.
-
-Copy rules (also in `.agents/social-media-context.md`):
-- Titles: max 100 chars; first 40 chars lead with outcome or benefit
-- Descriptions: 150–250 chars; natural language, keyword-integrated
-- Never append "UK" to a title
-- No double dashes (`--`) — use a colon or reword
-- No hype language: game-changer, life-changing, revolutionary, must-have
-- No overclaiming health or sleep outcomes
-- British spelling throughout
-
-**Step 3 — Create 9 Notion Distribution DB records.** One per pin. For each record set: Name (title), Description, Angle, Variant (A/B/C), Product relation, Status = `Candidate`. Capture the Notion page ID returned for each record — needed in step 6.
-
-**Step 4 — Write `hooks.json`** to `pins/<product-slug>/hooks.json`. 9 entries in pin order (angle 1 × 3, angle 2 × 3, angle 3 × 3). Format:
-
-```json
-[
-  {"angle": "Angle 1 Label",  "hook": null},
-  {"angle": "Angle 1 Label",  "hook": "Hook text for pin 2"},
-  {"angle": "Angle 1 Label",  "hook": "Hook text for pin 3"},
-  {"angle": "Angle 2 Label",  "hook": null},
-  ...
-]
+**Step 4 — Push to GitHub Pages**
 ```
-
-`hook: null` = Template A (clean). `hook: "..."` = Template B. Hooks must match exactly what was written to the Notion Distribution DB.
-
-**Step 5 — Confirm available dates with Mario.** Do not guess or infer from the Distribution DB (Notion MCP search is capped at 25 records and unordered — leads to conflicts). Ask Mario to check the calendar view and provide the next free dates:
-
-> Calendar: https://www.notion.so/mariojz/c771809668b183ea8ab201b6e3a2b2fe?v=db51809668b183aab383885aa864c2d2
-
-Rules: max 2 pins per day, minimum 1 pin every 2 days, aim for daily. Start date = day after processing.
-
-**Step 6 — Assign publish_at timestamps** using the priority time slots below. Match each date to its priority time based on weekday. Update the corresponding Notion Distribution DB records with the publish date.
-
-**Priority time slots (GMT = UTC, UK audience):**
-| Weekday | Time | Reason |
-|---|---|---|
-| Sunday | 8 PM | Highest intent — winding down, sleep mindset |
-| Monday | 9 PM | Post-weekend, purchase planning |
-| Tuesday | 8 PM | Mid-week peak + evening sweet spot |
-| Thursday | 10 AM | UK data peak, lunch-break browse |
-| Saturday | 9 AM | Weekend planning window |
-| Other days | 8 PM | Fallback |
-
-Distribute the 9 pins across the confirmed dates. Prefer the priority weekdays — if Mario's available dates include a Sunday, use it.
-
-**Step 7 — Write `schedule_meta.json`** to `pins/<product-slug>/schedule_meta.json`. This file drives `publish_due_pins.py` — get it right.
-
-```json
-{
-  "product_slug": "<product-slug>",
-  "records": [
-    {
-      "notion_page_id": "<id from step 3>",
-      "pin_file":       "<derived — see rules below>",
-      "title":          "<title from step 2>",
-      "description":    "<description from step 2>",
-      "affiliate_link": "<amazon.co.uk link with Associates tag>",
-      "publish_at":     "<ISO 8601 UTC — e.g. 2026-05-15T20:00:00Z>"
-    },
-    ... 9 records total, in the same order as hooks.json ...
-  ]
-}
+git add docs/pins/<slug>/ && git commit -m "..." && git push
 ```
+Images must be live at `https://mjorquera.github.io/picky-products/pins/<slug>/` before the daily publisher runs.
 
-**`pin_file` derivation rules** (must match `generate_pins.py` exactly):
+**Step 5 — Daily publisher handles the rest**
+`publish_due_pins.py` runs automatically via Cowork at 9 PM local. It picks up pins where `publish_at <= now (UTC)`, sends them to the Make webhook → Pinterest, updates Notion → `Scheduled`, and moves completed product folders to `pins/scheduled/`.
 
-| hooks.json entry | Angle slug | pin_file |
-|---|---|---|
-| Entry 1 (hook=null) | e.g. `hot` | `pin-1-hot-clean.png` |
-| Entry 2 (first hook for angle) | `hot` | `pin-2-hot-hook-a.png` |
-| Entry 3 (second hook for angle) | `hot` | `pin-3-hot-hook-b.png` |
-| Entry 4 (hook=null) | e.g. `light` | `pin-4-light-clean.png` |
-| ...and so on | | |
-
-Angle → slug map: `"Hot Sleeper" → "hot"`, `"Light Sleeper" → "light"`, `"Anxious Sleeper" → "anxious"`, `"Restless Sleeper" → "restless"`.
-
-Pattern: `pin-{1-indexed position}-{angle-slug}-{clean|hook-a|hook-b}.png`
-
-**Highest-priority keyword:** `"weighted blanket for anxiety uk"`
-
-**Other high-value keywords (UK sleep niche):** `"sleep accessories uk"`, `"cooling pillow uk"`, `"weighted blanket uk"`, `"best sleep products uk"`, `"anxiety blanket uk"`, `"light sleeper tips"`, `"how to sleep better uk"`. Use these in pin titles and descriptions to maximise search reach. Keyword relevance is the primary ranking signal — timing is secondary.
-
-**Pinterest boards:** All pins go to **UK Comfort Products for Sleep** board (single general board).
+**Pinterest boards:** All pins go to the **UK Comfort Products for Sleep** board.
 
 ---
 
 ## Pinterest scheduling
 
-Pins are published via **Make** using two scripts:
-
-- **`publish_due_pins.py`** — daily publisher, run automatically by Cowork scheduled task (9 PM local). Publishes pins one-by-one based on `publish_at` dates.
+- **`publish_due_pins.py`** — daily publisher, run automatically by Cowork (9 PM local). Publishes one-by-one based on `publish_at`.
 - **`schedule_via_make.py`** — manual full-batch publisher. Sends all 9 pins at once. Use for testing or emergency publish only.
 
-Make's Pinterest connector has Standard API access, bypassing the Trial restriction on the local Pinterest app (App ID `1570355`, upgrade to Standard pending video demo submitted 2026-05-15).
+Make's Pinterest connector has Standard API access, bypassing the Trial restriction on the local Pinterest app (App ID `1570355`).
 
-### End-to-end flow
-
-1. **Process product** (`process [product name]`) — Cowork creates Notion Distribution records and writes two files to `pins/<product-slug>/`:
-   - `hooks.json` — pin order, angles, hook text
-   - `schedule_meta.json` — Notion IDs, titles, descriptions, affiliate links, publish_at timestamps
-2. Mario drops `product.jpg` into `pins/<product-slug>/`
-3. **Generate pins** (`generate pins for [product name]`) — Cowork runs `generate_pins.py`, creates 9 PNGs, updates Notion status → `Image Created`
-4. **Push images to GitHub Pages**: `git add docs/pins/<slug>/ && git commit -m "..." && git push`
-   - Images must be live at `https://mjorquera.github.io/picky-products/pins/<slug>/` before publishing
-5. **Daily publisher handles the rest** — `publish_due_pins.py` runs automatically via Cowork scheduled task (daily at 9 PM local). It:
-   - Scans all `pins/*/schedule_meta.json` for records where `publish_at <= now (UTC)`
-   - Skips pins already marked Scheduled or Distributed in Notion
-   - Sends due pins to Make webhook → Pinterest posts them immediately
-   - Updates Notion → `Scheduled`
-   - Moves fully-published product folders to `pins/scheduled/`
-
-**Manual publish** (bypass the daily task): `python3 schedule_via_make.py <product-slug>` — sends all 9 pins at once. Use for testing or immediate full-batch publishing only; pins all land at the same time with no spacing.
-
-**Timing note:** Make's Pinterest connector posts pins immediately (no `publish_at` support). The `publish_at` timestamps in `schedule_meta.json` control *when* `publish_due_pins.py` sends each pin to Make. Pins land on Pinterest at roughly the scheduled time — within ~1 hour of the daily task run.
+**Timing note:** Make posts pins immediately (no native `publish_at` support). The timestamps in `schedule_meta.json` control when `publish_due_pins.py` sends each pin — pins land on Pinterest within ~1 hour of the scheduled time.
 
 ### Make scenario
 
@@ -178,29 +81,6 @@ Make's Pinterest connector has Standard API access, bypassing the Trial restrict
 }
 ```
 
-### schedule_meta.json format
-
-Cowork **must write this file** at the end of step 1, after Mario confirms the available dates. It must be in the same order as `hooks.json`.
-
-```json
-{
-  "product_slug": "silentnight-cool-touch-pillow",
-  "records": [
-    {
-      "notion_page_id": "abc123...",
-      "pin_file":       "pin-1-hot-clean.png",
-      "title":          "Cool pillow for hot sleepers — sleep better tonight",
-      "description":    "Waking up overheated? The Silentnight Cool Touch Pillow...",
-      "affiliate_link": "https://amazon.co.uk/dp/XXXXX/?tag=pickyproducts-21",
-      "publish_at":     "2026-05-15T20:00:00Z"
-    },
-    ...9 records total, same order as hooks.json...
-  ]
-}
-```
-
-`publish_at` must be a full ISO 8601 UTC datetime. Apply the priority time slot for the weekday when writing the timestamp (see table above). `publish_due_pins.py` compares this against `now (UTC)` to decide when to send each pin to Make.
-
 ### One-time setup
 
 **Status: complete as of 2026-05-15.** All `.env` keys are populated and the Notion integration is connected.
@@ -208,16 +88,14 @@ Cowork **must write this file** at the end of step 1, after Mario confirms the a
 For reference if re-doing from scratch:
 
 1. Create a Pinterest app at https://developers.pinterest.com/apps/
-   - App ID: `1570355`
-   - Set redirect URI: `http://localhost:8080/callback`
+   - App ID: `1570355` — set redirect URI: `http://localhost:8080/callback`
    - **Do not use the "Generate token" button** on the app page — it omits `pins:write`
-2. Install dependency: `pip3 install requests --break-system-packages` (use `pip3`, not `pip`)
-3. Run `python3 pinterest_auth.py` — follow the prompts to get tokens + board ID saved to `.env`
+2. `pip3 install requests --break-system-packages`
+3. `python3 pinterest_auth.py` — follow prompts to get tokens + board ID saved to `.env`
 4. Create a Notion internal integration at https://www.notion.so/my-integrations
-   - Add `NOTION_TOKEN="ntn_xxxx..."` to `.env`
-   - Share the Distribution DB with the integration in Notion (open DB → … → Connections)
+   - Add `NOTION_TOKEN` to `.env` and share both databases with the integration
 
-### .env keys required for scheduling
+### .env keys
 
 ```
 PINTEREST_CLIENT_ID="..."
@@ -228,84 +106,41 @@ PINTEREST_BOARD_ID="..."
 NOTION_TOKEN="ntn_..."
 ```
 
-`publish_due_pins.py` and `schedule_via_make.py` send pins via the Make webhook — no direct Pinterest API token management required in these scripts.
+---
+
+## Image generation
+
+**Script:** `generate_pins.py <product_slug>`  
+**Canvas:** 1000×1500px — white background, large product image, rounded pill at bottom with bold dark text  
+**Prerequisites:** `product.jpg` and `hooks.json` must both be present in `pins/<product-slug>/` before running.
+
+**Output:**
+```
+pins/<product-slug>/
+  hooks.json
+  product.jpg
+  pin-1-{angle}-clean.png       ← Template A: pill = angle label
+  pin-2-{angle}-hook-a.png      ← Template B: hook variant A
+  pin-3-{angle}-hook-b.png      ← Template B: hook variant B
+  ... (9 total)
+```
+
+---
 
 ## Folder conventions
 
 ```
 pins/
-  <product-slug>/          ← active: processing, images generated, not yet scheduled
+  <product-slug>/       ← active: processing or awaiting scheduling
   scheduled/
-    <product-slug>/        ← all 9 pins scheduled in Pinterest
+    <product-slug>/     ← all 9 pins scheduled in Pinterest
 ```
-
-When a product's full 9-pin batch has been scheduled in Pinterest and Notion status is updated to `Scheduled`, its folder moves to `pins/scheduled/`. Products in `pins/` (root) are either mid-processing or awaiting a scheduling session.
-
----
-
-## Image generation
-
-Pin images are generated locally using **Python + Pillow** (`generate_pins.py` in the project root).
-
-**Canvas:** 1000×1500px  
-**Style:** White background, large product image, rounded pill at bottom with bold dark text (hook or angle label)  
-**Script:** `generate_pins.py <product_slug>`
-
-**Prerequisites before running the script:**
-1. `pins/<product-slug>/product.jpg` — save the highest-res Amazon image (right-click main product photo on the Amazon listing)
-2. `pins/<product-slug>/hooks.json` — written automatically by Cowork when creating distribution records (see below). The script will exit with a clear error if this file is missing.
-
-**hooks.json format:**
-```json
-[
-  {"angle": "Angle 1 Label",   "hook": null},
-  {"angle": "Angle 1 Label",   "hook": "Hook text for pin 2"},
-  {"angle": "Angle 1 Label",   "hook": "Hook text for pin 3"},
-  {"angle": "Angle 2 Label",   "hook": null},
-  {"angle": "Angle 2 Label",   "hook": "Hook text for pin 5"},
-  {"angle": "Angle 2 Label",   "hook": "Hook text for pin 6"},
-  {"angle": "Angle 3 Label",   "hook": null},
-  {"angle": "Angle 3 Label",   "hook": "Hook text for pin 8"},
-  {"angle": "Angle 3 Label",   "hook": "Hook text for pin 9"}
-]
-```
-Angle labels are chosen per product — common options: Hot Sleeper, Light Sleeper, Anxious Sleeper, Restless Sleeper. Pick whichever 3 fit the product honestly.
-`hook: null` = Template A (clean) — pill shows the angle label (e.g. "For Hot Sleepers").  
-`hook: "..."` = Template B — pill shows the hook text.  
-Hooks must match exactly what was written to the Notion Distribution DB.
-
-**To generate pins for a product:**
-1. Create distribution records in Notion first ("process [product name]") — Cowork writes `hooks.json` as part of that step
-2. Drop `product.jpg` into `pins/<product-slug>/`
-3. Say "generate pins for [product name]" — Claude runs the script and saves 9 PNGs to `pins/<product-slug>/`
-4. Claude updates Distribution DB status → `Image Created`
-
-**Output files per product:**
-```
-pins/<product-slug>/
-  hooks.json                   ← pin definitions (source of truth for hooks)
-  product.jpg                  ← source product image
-  pin-1-hot-clean.png          ← Template A: pill = "For Hot Sleepers"
-  pin-2-hot-hook-a.png         ← Template B: hook variant A
-  pin-3-hot-hook-b.png         ← Template B: hook variant B
-  pin-4-light-clean.png
-  pin-5-light-hook-a.png
-  pin-6-light-hook-b.png
-  pin-7-anxious-clean.png
-  pin-8-anxious-hook-a.png
-  pin-9-anxious-hook-b.png
-```
-
-**Empty folders for upcoming products are pre-created** in `pins/` — just drop `product.jpg` in the relevant folder and trigger processing.
 
 ---
 
 ## Agent instructions
 
-When working on Picky Products, always operate with the following context:
-
 - Niche: Sleep Optimization Accessories targeting UK buyers
-- Score products for three personas: hot sleepers, light sleepers, and anxious/insomniac sleepers
 - Target price range: £20–£80
 - Minimum quality bar: 50 reviews, 4★+
 - All Amazon links must use amazon.co.uk
