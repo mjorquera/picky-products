@@ -1,0 +1,11 @@
+[
+  {"angle": "Hot Sleeper",      "hook": null},
+  {"angle": "Hot Sleeper",      "hook": "Still waking up sweaty?"},
+  {"angle": "Hot Sleeper",      "hook": "Hot sleeper? Try this"},
+  {"angle": "Light Sleeper",    "hook": null},
+  {"angle": "Light Sleeper",    "hook": "Light sleeper? Read this"},
+  {"angle": "Light Sleeper",    "hook": "Stop waking at 3am"},
+  {"angle": "Restless Sleeper", "hook": null},
+  {"angle": "Restless Sleeper", "hook": "Restless sleeper?"},
+  {"angle": "Restless Sleeper", "hook": "Can't get comfortable?"}
+]
