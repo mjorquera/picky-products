@@ -19,8 +19,7 @@ Picky Products is a Pinterest-focused affiliate marketing side project. The goal
 | **Apify** (MCP) | Product discovery |
 | **Notion** (MCP) | Source of truth for products and distribution data |
 | **Python + Pillow** | Pin image generation (`generate_pins.py`) |
-| **Canva** (MCP) | Asset storage only (product images via `get-assets` if needed) |
-| **Pinterest API v5** | Pin scheduling via `schedule_pins.py` (no browser) |
+| **Pinterest API v5** | Pin scheduling via Make (`schedule_via_make.py`, `publish_due_pins.py`) |
 | **Amazon PA API** | Pending activation (3 qualifying sales) |
 
 ---
@@ -47,7 +46,7 @@ Picky Products is a Pinterest-focused affiliate marketing side project. The goal
 
 **Step 1 — Choose angles.** Pick 3 personas that genuinely fit the product. Common options: Hot Sleeper, Light Sleeper, Anxious Sleeper, Restless Sleeper. A weighted blanket fits anxious/restless/light better than hot. Don't force a persona that doesn't fit.
 
-**Step 2 — Write copy using `social-post-writer`.** For each of the 9 pins, generate title + description. Do not write copy manually — always use the skill.
+**Step 2 — Write copy.** For each of the 9 pins, generate title + description following the rules below.
 
 Copy rules (also in `.agents/social-media-context.md`):
 - Titles: max 100 chars; first 40 chars lead with outcome or benefit
@@ -94,7 +93,7 @@ Rules: max 2 pins per day, minimum 1 pin every 2 days, aim for daily. Start date
 
 Distribute the 9 pins across the confirmed dates. Prefer the priority weekdays — if Mario's available dates include a Sunday, use it.
 
-**Step 7 — Write `schedule_meta.json`** to `pins/<product-slug>/schedule_meta.json`. This file drives `schedule_pins.py` — get it right.
+**Step 7 — Write `schedule_meta.json`** to `pins/<product-slug>/schedule_meta.json`. This file drives `publish_due_pins.py` — get it right.
 
 ```json
 {
@@ -137,9 +136,12 @@ Pattern: `pin-{1-indexed position}-{angle-slug}-{clean|hook-a|hook-b}.png`
 
 ## Pinterest scheduling
 
-Pins are published via **Make** using `schedule_via_make.py`. Make's Pinterest connector has Standard API access, bypassing the Trial restriction on the local Pinterest app.
+Pins are published via **Make** using two scripts:
 
-> **Note:** `schedule_pins.py` (direct API) is kept for when Pinterest Standard access is approved for App ID 1570355. Upgrade request submitted 2026-05-15 — pending video demo.
+- **`publish_due_pins.py`** — daily publisher, run automatically by Cowork scheduled task (9 PM local). Publishes pins one-by-one based on `publish_at` dates.
+- **`schedule_via_make.py`** — manual full-batch publisher. Sends all 9 pins at once. Use for testing or emergency publish only.
+
+Make's Pinterest connector has Standard API access, bypassing the Trial restriction on the local Pinterest app (App ID `1570355`, upgrade to Standard pending video demo submitted 2026-05-15).
 
 ### End-to-end flow
 
@@ -149,14 +151,17 @@ Pins are published via **Make** using `schedule_via_make.py`. Make's Pinterest c
 2. Mario drops `product.jpg` into `pins/<product-slug>/`
 3. **Generate pins** (`generate pins for [product name]`) — Cowork runs `generate_pins.py`, creates 9 PNGs, updates Notion status → `Image Created`
 4. **Push images to GitHub Pages**: `git add docs/pins/<slug>/ && git commit -m "..." && git push`
-5. **Publish**: `python3 schedule_via_make.py <product-slug>`
-   - Sends all 9 records to Make webhook (with GitHub Pages image URLs)
-   - Make iterates via Flow Control → Iterator, calls Pinterest API for each pin
-   - Pins go live **immediately** — no `publish_at` (Make's connector doesn't support it)
-   - Updates each Notion Distribution record → Status: `Scheduled`
-   - Moves `pins/<product-slug>/` → `pins/scheduled/<product-slug>/`
+   - Images must be live at `https://mjorquera.github.io/picky-products/pins/<slug>/` before publishing
+5. **Daily publisher handles the rest** — `publish_due_pins.py` runs automatically via Cowork scheduled task (daily at 9 PM local). It:
+   - Scans all `pins/*/schedule_meta.json` for records where `publish_at <= now (UTC)`
+   - Skips pins already marked Scheduled or Distributed in Notion
+   - Sends due pins to Make webhook → Pinterest posts them immediately
+   - Updates Notion → `Scheduled`
+   - Moves fully-published product folders to `pins/scheduled/`
 
-**Timing:** run `schedule_via_make.py` at the time you want pins to go live. For a spread schedule, run it once per priority time slot across multiple days.
+**Manual publish** (bypass the daily task): `python3 schedule_via_make.py <product-slug>` — sends all 9 pins at once. Use for testing or immediate full-batch publishing only; pins all land at the same time with no spacing.
+
+**Timing note:** Make's Pinterest connector posts pins immediately (no `publish_at` support). The `publish_at` timestamps in `schedule_meta.json` control *when* `publish_due_pins.py` sends each pin to Make. Pins land on Pinterest at roughly the scheduled time — within ~1 hour of the daily task run.
 
 ### Make scenario
 
@@ -194,7 +199,7 @@ Cowork **must write this file** at the end of step 1, after Mario confirms the a
 }
 ```
 
-`publish_at` must be a full ISO 8601 UTC datetime. If only a date is available, `schedule_pins.py` will apply the priority time slot for that weekday automatically.
+`publish_at` must be a full ISO 8601 UTC datetime. Apply the priority time slot for the weekday when writing the timestamp (see table above). `publish_due_pins.py` compares this against `now (UTC)` to decide when to send each pin to Make.
 
 ### One-time setup
 
@@ -223,7 +228,7 @@ PINTEREST_BOARD_ID="..."
 NOTION_TOKEN="ntn_..."
 ```
 
-`schedule_pins.py` auto-refreshes the access token when expired using the refresh token.
+`publish_due_pins.py` and `schedule_via_make.py` send pins via the Make webhook — no direct Pinterest API token management required in these scripts.
 
 ## Folder conventions
 
@@ -240,7 +245,7 @@ When a product's full 9-pin batch has been scheduled in Pinterest and Notion sta
 
 ## Image generation
 
-Pin images are generated locally using **Python + Pillow** (`generate_pins.py` in the project root). Canva is no longer used for image generation — export URL expiry and proxy restrictions made it unworkable.
+Pin images are generated locally using **Python + Pillow** (`generate_pins.py` in the project root).
 
 **Canvas:** 1000×1500px  
 **Style:** White background, large product image, rounded pill at bottom with bold dark text (hook or angle label)  
@@ -290,8 +295,6 @@ pins/<product-slug>/
   pin-8-anxious-hook-a.png
   pin-9-anxious-hook-b.png
 ```
-
-**Canva** (MCP still connected) is retained for asset storage only — product images can be fetched via `get-assets` if needed.
 
 **Empty folders for upcoming products are pre-created** in `pins/` — just drop `product.jpg` in the relevant folder and trigger processing.
 
