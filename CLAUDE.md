@@ -42,13 +42,7 @@ Run `/process-product <product name>`. The skill handles everything: looks up th
 Drop `product.jpg` into `pins/<product-slug>/` (save the highest-res image from the Amazon listing — right-click the main product photo).
 
 **Step 3 — Generate pin images**
-Say "generate pins for [product name]". Claude runs `generate_pins.py <product-slug>`, saves 9 PNGs to `pins/<product-slug>/`, and updates Notion status → `Image Created`.
-
-**Step 4 — Push to GitHub Pages**
-```
-git add docs/pins/<slug>/ && git commit -m "..." && git push
-```
-Images must be live at `https://mjorquera.github.io/picky-products/pins/<slug>/` before the daily publisher runs.
+Run `/generate-pins <product name>`. The skill runs `generate_pins.py`, copies images to `docs/pins/<slug>/`, updates Notion status → `Image Created`, and commits and pushes so images are live at `https://mjorquera.github.io/picky-products/pins/<slug>/`.
 
 **Step 5 — Daily publisher handles the rest**
 `publish_due_pins.py` runs automatically via Cowork at 9 PM local. It picks up pins where `publish_at <= now (UTC)`, sends them to the Make webhook → Pinterest, updates Notion → `Scheduled`, and moves completed product folders to `pins/scheduled/`.
