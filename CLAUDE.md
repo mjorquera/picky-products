@@ -142,6 +142,12 @@ pins/
 
 ---
 
+## Session close
+
+Run `/bye` at the end of every working session. The skill reviews the session for corrections and feedback, then updates the relevant skill files so the next session starts better.
+
+---
+
 ## Principles
 
 - **Agent-first:** Build toward autonomous operation; human input = triggering and reviewing.
