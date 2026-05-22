@@ -27,7 +27,7 @@ Picky Products is a Pinterest-focused affiliate marketing side project. The goal
 
 - **Products DB:** `ddf18096-68b1-8219-bb44-01b7fa5c9611` (collection: `a2c18096-68b1-82cf-87d5-075ab33cfb3c`)
 - **Distribution DB:** `c7718096-68b1-83ea-8ab2-01b6e3a2b2fe` (collection: `34618096-68b1-8227-ade9-0785f977dfae`)
-- `Enrichment Status` field (Products DB) valid values: `"Empty"`, `"Candidate"`, `"Enriched"`, `"Distributed"`
+- `Enrichment Status` field (Products DB) valid values: `"Empty"`, `"Candidate"`, `"Enriched"`, `"Scheduled"`, `"Distributed"`. Set to `"Scheduled"` by `/generate-pins` once images are live and pins are queued for the daily publisher.
 - Distribution DB `Affiliate Link` is a **rollup** from the Product relation — read-only, auto-populated.
 - Distribution DB `Angle` valid values: `"Hot Sleeper"`, `"Light Sleeper"`, `"Anxious/Insomniac"`. `"Restless Sleeper"` is not a valid select option — omit the field when writing Restless Sleeper pins.
 
