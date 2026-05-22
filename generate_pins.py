@@ -37,8 +37,20 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
 WORKSPACE = os.path.dirname(os.path.abspath(__file__))
-FONT_BOLD = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
-FONT_REG  = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+def _find_font(candidates):
+    for path in candidates:
+        if os.path.exists(path):
+            return path
+    return None
+
+FONT_BOLD = _find_font([
+    "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",          # Linux
+    "/System/Library/Fonts/Supplemental/Arial Bold.ttf",              # macOS
+])
+FONT_REG = _find_font([
+    "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",                # Linux
+    "/System/Library/Fonts/Supplemental/Arial.ttf",                   # macOS
+])
 
 # ── Canvas ────────────────────────────────────────────────────────────────────
 W, H = 1000, 1500
