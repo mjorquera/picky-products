@@ -85,6 +85,10 @@ def load_pins(base_dir):
     with open(hooks_path) as f:
         data = json.load(f)
 
+    # Support both legacy list format and new object format {amazon_image_url, pins: [...]}
+    if isinstance(data, dict):
+        data = data.get("pins", data)
+
     if len(data) != 9:
         print(f"ERROR: hooks.json must contain exactly 9 entries, found {len(data)}")
         sys.exit(1)
