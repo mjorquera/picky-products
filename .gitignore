@@ -29,7 +29,7 @@ pins/*/*.png
 *.csv
 
 # Claude Code local settings (may contain tokens)
-.claude/
+.claude/settings.local.json
 
 # Editor
 .vscode/
