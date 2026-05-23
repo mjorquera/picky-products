@@ -99,7 +99,7 @@ git commit -m "Add <product-slug> pin images"
 git push
 ```
 
-**Note:** `git push` requires network access and git credentials. In sandboxed environments (e.g. Cowork), the push will fail with "No such device or address". If that happens, tell the user to run `git push` manually from their terminal. The commit will already be staged correctly. Git identity (`user.email`, `user.name`) may also need to be set for the commit step — use `git config user.email` / `git config user.name` if the commit fails with "Author identity unknown". If a stale `.git/index.lock` is present (from a prior crashed process), the sandbox cannot remove it — tell the user to run `rm .git/index.lock` manually before committing.
+**Note:** `git push` requires network access and git credentials. In sandboxed environments (e.g. Cowork), the push will fail with "No such device or address". If that happens, tell the user to run `git push` manually from their terminal. The commit will already be staged correctly. Git identity (`user.email`, `user.name`) may also need to be set for the commit step — use `git config user.email` / `git config user.name` if the commit fails with "Author identity unknown". If a stale lock file is present (from a prior crashed process), the sandbox cannot remove it — tell the user to remove it manually. Common lock files: `.git/index.lock`, `.git/HEAD.lock`. Run `rm .git/index.lock` or `rm .git/HEAD.lock` as appropriate before committing.
 
 ---
 
