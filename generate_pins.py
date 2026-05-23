@@ -62,10 +62,11 @@ PILL_TEXT = (20,  20,  20)
 
 # ── Angle → short slug (for filenames) ───────────────────────────────────────
 ANGLE_SLUG = {
-    "Hot Sleeper":      "hot",
-    "Light Sleeper":    "light",
-    "Anxious Sleeper":  "anxious",
-    "Restless Sleeper": "restless",
+    "Hot Sleeper":        "hot",
+    "Light Sleeper":      "light",
+    "Anxious Sleeper":    "anxious",
+    "Anxious/Insomniac":  "anxious",
+    "Restless Sleeper":   "restless",
 }
 
 
