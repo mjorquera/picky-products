@@ -13,9 +13,10 @@ allowed-tools:
   - Write
   - Bash
   - AskUserQuestion
-  - mcp__notion__API-query-data-source
-  - mcp__notion__API-post-page
-  - mcp__notion__API-patch-page
+  - mcp__notion__notion-search
+  - mcp__notion__notion-fetch
+  - mcp__notion__notion-create-pages
+  - mcp__notion__notion-update-page
 ---
 
 # process-product
@@ -46,15 +47,18 @@ Create the folder `pins/<product-slug>/` in the project root if it doesn't alrea
 
 ## Step 2 — Look up product in Notion
 
-Query the Products DB using `mcp__notion__API-query-data-source`:
-- `data_source_id`: `a2c18096-68b1-82cf-87d5-075ab33cfb3c`
-- Filter: `{"property": "Product Name", "title": {"contains": "<product name>"}}`
+Search for the product using `notion-search`:
+- `query`: the product name
+- `data_source_url`: `collection://a2c18096-68b1-82cf-87d5-075ab33cfb3c`
 
-**Important:** use the `data_source_id` (collection ID), not the database ID. Passing the database ID returns a 404 from this endpoint.
+This returns matching pages. Take the closest title match.
 
-Extract from the result:
+Then fetch the full record using `notion-fetch`:
+- `id`: the page `id` from the search result
+
+Extract from the fetched page `properties`:
 - `id` — the Notion page ID for the Product record
-- `properties.Affiliate Link.url` — the affiliate link
+- `Affiliate Link` — the affiliate link URL
 
 **Affiliate link validation:** the correct Amazon Associates tag is `pickyproducts-21`. If the extracted URL contains `pickyprod-21` (no 's'), it is wrong — stop and report the mismatch before creating any Distribution records. If the link is an `amzn.to` short URL, accept it as-is (these resolve correctly).
 
@@ -114,11 +118,11 @@ Generate title, description, and hook for each of the 9 pins (3 angles × 3 pins
 
 ## Step 5 — Create 9 Notion Distribution DB records
 
-Create all 9 records in parallel using `mcp__notion__API-post-page`.
+Create all 9 records in parallel using `notion-create-pages`.
 
 **Parent:**
 ```json
-{"type": "database_id", "database_id": "c7718096-68b1-83ea-8ab2-01b6e3a2b2fe"}
+{"type": "data_source_id", "data_source_id": "34618096-68b1-8227-ade9-0785f977dfae"}
 ```
 
 **Field mapping per record:**
@@ -130,7 +134,7 @@ Create all 9 records in parallel using `mcp__notion__API-post-page`.
 | Angle label | `Angle` | select — omit for Restless Sleeper |
 | Variant | `Variant` | select: "A", "B", or "C" |
 | Hook text | `Hook` | rich_text — only set for B and C variants |
-| Product page ID | `Product` | relation: `[{"id": "<product-page-id>"}]` |
+| Product page URL | `Product` | JSON string: `"[\"https://www.notion.so/<product-page-id-no-dashes>\"]"` — strip dashes from page ID for the URL |
 | — | `Status` | select: "Candidate" |
 | — | `Channel` | select: "Pinterest" |
 
@@ -193,10 +197,12 @@ For each date, apply the priority time slot based on weekday (all times UTC):
 
 Format each as ISO 8601 UTC: `2026-05-23T20:00:00Z`
 
-Update all 9 Notion records in parallel using `mcp__notion__API-patch-page`:
+Update all 9 Notion records in parallel. Use expanded date properties:
 ```json
-{"Publish Date": {"date": {"start": "YYYY-MM-DD"}}}
+{"date:Publish Date:start": "2026-06-02T20:00:00Z", "date:Publish Date:is_datetime": 1}
 ```
+
+Set `is_datetime` to `1` — the publisher relies on time precision, not just date.
 
 ---
 
@@ -257,11 +263,12 @@ pin-9-restless-hook-b.png
 
 ## Step 10 — Update product status in Notion
 
-Patch the product record using `mcp__notion__API-patch-page`:
+Update the product record using `notion-update-page`:
 - `page_id`: the product page ID from step 2
+- `command`: `update_properties`
 
 ```json
-{"Status": {"select": {"name": "Processed"}}}
+{"Status": "Processed"}
 ```
 
 ---

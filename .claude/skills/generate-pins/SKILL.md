@@ -11,7 +11,7 @@ compatibility: claude-code
 allowed-tools:
   - Read
   - Bash
-  - mcp__notion__API-patch-page
+  - mcp__notion__notion-update-page
 ---
 
 # generate-pins
@@ -77,16 +77,16 @@ cp pins/<product-slug>/pin-*.png docs/pins/<product-slug>/
 
 Read `pins/<product-slug>/schedule_meta.json` to get all 9 `notion_page_id` values and the `product_page_id`.
 
-Update all 9 Distribution DB records in parallel using `mcp__notion__API-patch-page`:
+Update all 9 Distribution DB records in parallel using `notion-update-page` with `command: update_properties`:
 
 ```json
-{"Status": {"select": {"name": "Image Created"}}}
+{"Status": "Image Created"}
 ```
 
 Then update the Products DB record using the `product_page_id`:
 
 ```json
-{"Status": {"select": {"name": "Scheduled"}}}
+{"Status": "Scheduled"}
 ```
 
 ---
@@ -98,6 +98,8 @@ git add docs/pins/<product-slug>/
 git commit -m "Add <product-slug> pin images"
 git push
 ```
+
+**Note:** `git push` requires network access and git credentials. In sandboxed environments (e.g. Cowork), the push will fail with "No such device or address". If that happens, tell the user to run `git push` manually from their terminal. The commit will already be staged correctly. Git identity (`user.email`, `user.name`) may also need to be set for the commit step — use `git config user.email` / `git config user.name` if the commit fails with "Author identity unknown". If a stale `.git/index.lock` is present (from a prior crashed process), the sandbox cannot remove it — tell the user to run `rm .git/index.lock` manually before committing.
 
 ---
 
