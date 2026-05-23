@@ -138,6 +138,7 @@ pins/
 - Target price range: £20–£80
 - Minimum quality bar: 50 reviews, 4★+
 - All Amazon links must use amazon.co.uk
+- Amazon Associates tag: `pickyproducts-21` — if any URL contains `pickyprod-21` (no 's'), it is wrong
 - Notion is the source of truth — always write to Products DB before Distribution DB
 
 ---
