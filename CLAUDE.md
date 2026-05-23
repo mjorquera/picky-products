@@ -36,12 +36,11 @@ Picky Products is a Pinterest-focused affiliate marketing side project. The goal
 ## Content workflow
 
 **Step 1 — Process product**
-Run `/process-product <product name>`. The skill handles everything: looks up the product in Notion, generates copy for 9 pins, creates Distribution DB records, writes `hooks.json` and `schedule_meta.json`, and assigns publish dates at 1 pin/day from a start date you provide.
+Run `/process-product <product name>`. The skill handles everything: looks up the product in Notion, generates copy for 9 pins, creates Distribution DB records, writes `hooks.json` and `schedule_meta.json`, assigns publish dates at 1 pin/day from a start date you provide, and **auto-downloads `product.jpg` from the Amazon CDN** via `fetch_product_image.py`.
 
-**Step 2 — Add product image**
-Drop `product.jpg` into `pins/<product-slug>/` (save the highest-res image from the Amazon listing — right-click the main product photo).
+If the auto-download fails (CDN error, missing URL in Notion, or image below 600px), the skill will tell you — drop `product.jpg` manually into `pins/<product-slug>/` in that case only.
 
-**Step 3 — Generate pin images**
+**Step 2 — Generate pin images**
 Run `/generate-pins <product name>`. The skill runs `generate_pins.py`, copies images to `docs/pins/<slug>/`, updates Notion status → `Image Created`, and commits and pushes so images are live at `https://mjorquera.github.io/picky-products/pins/<slug>/`.
 
 **Step 5 — Daily publisher handles the rest**
