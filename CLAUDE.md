@@ -7,7 +7,7 @@ Picky Products is a Pinterest-focused affiliate marketing side project. The goal
 - **Niche:** Sleep Optimization Accessories (UK buyers)
 - **Audience personas:** hot sleepers, light sleepers, anxious/insomniac sleepers, restless sleepers — select 3 per product based on fit
 - **Distribution:** Pinterest (primary)
-- **Monetisation:** Amazon Associates (UK); PA API pending activation at 3 qualifying sales
+- **Monetisation:** Amazon Associates (UK); PA API pending activation — 3 qualifying sales recorded 2026-05-21, check dashboard to apply
 
 ---
 
@@ -140,6 +140,19 @@ pins/
 - All Amazon links must use amazon.co.uk
 - Amazon Associates tag: `pickyproducts-21` — if any URL contains `pickyprod-21` (no 's'), it is wrong
 - Notion is the source of truth — always write to Products DB before Distribution DB
+
+---
+
+## Analytics
+
+Weekly performance reports live in `analytics/`. One file per week, named `YYYY-Www.md` (ISO week, Sunday end date).
+
+**Report contents:** Pinterest metrics (from `/pinterest-analytics`), Notion product status snapshot, week-on-week delta vs prior file.
+
+**Cowork weekly task instruction:**
+> Run `/pinterest-analytics` and analyse performance for the last 7 days. Query the Notion Products DB (`ddf18096-68b1-8219-bb44-01b7fa5c9611`) and count records by Status: Candidate, Processed, Scheduled, Published. Find the most recent file in `analytics/` (excluding `_template.md`) and pull last week's Pinterest metrics for the week-on-week delta. Write a report to `analytics/YYYY-Www.md` using the structure in `analytics/_template.md`. Commit with message `Add weekly analytics YYYY-Www`.
+
+**Known issue:** Products DB `Published` count shows 0 despite published pins in Distribution DB — `publish_due_pins.py` may not be updating the Products DB status correctly. Investigate when time allows.
 
 ---
 
