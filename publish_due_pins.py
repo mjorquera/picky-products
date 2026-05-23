@@ -10,8 +10,8 @@ What it does:
     1. Scans pins/*/schedule_meta.json for any records where publish_at <= now
     2. Checks Notion to skip any already Scheduled/Distributed
     3. Sends due pins to Make webhook → Pinterest publishes them
-    4. Updates Notion status → Scheduled
-    5. If all 9 pins for a product are done, moves folder → pins/scheduled/
+    4. Updates Notion Distribution DB record → Status: Published
+    5. If all 9 pins for a product are done, updates Products DB → Status: Published, moves folder → pins/scheduled/
 
 Run daily via Cowork scheduled task.
 """
@@ -63,7 +63,7 @@ def notion_get_status(token: str, page_id: str) -> str:
     return ""
 
 
-def notion_set_status(token: str, page_id: str, status: str = "Scheduled") -> bool:
+def notion_set_status(token: str, page_id: str, status: str = "Published") -> bool:
     resp = requests.patch(
         f"{NOTION_API}/pages/{page_id}",
         headers={
@@ -129,7 +129,7 @@ def main():
 
             # Check Notion — skip if already published
             status = notion_get_status(notion_token, rec["notion_page_id"])
-            if status in ("Scheduled", "Distributed"):
+            if status in ("Published",):
                 continue
 
             due.append((slug, rec))
@@ -186,10 +186,11 @@ def main():
             meta = json.load(f)
 
         all_done = all(
-            notion_get_status(notion_token, r["notion_page_id"]) in ("Scheduled", "Distributed")
+            notion_get_status(notion_token, r["notion_page_id"]) == "Published"
             for r in meta["records"]
         )
         if all_done:
+            notion_set_status(notion_token, meta["product_page_id"], "Published")
             src = os.path.join(WORKSPACE, "pins", slug)
             dst = os.path.join(WORKSPACE, "pins", "scheduled", slug)
             os.makedirs(os.path.dirname(dst), exist_ok=True)

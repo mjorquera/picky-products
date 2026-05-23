@@ -1,0 +1,11 @@
+[
+  {"angle": "Light Sleeper", "hook": null},
+  {"angle": "Light Sleeper", "hook": "Still too much light?"},
+  {"angle": "Light Sleeper", "hook": "Light waking you up?"},
+  {"angle": "Anxious/Insomniac", "hook": null},
+  {"angle": "Anxious/Insomniac", "hook": "Can't switch your brain off?"},
+  {"angle": "Anxious/Insomniac", "hook": "Anxious at bedtime?"},
+  {"angle": "Restless Sleeper", "hook": null},
+  {"angle": "Restless Sleeper", "hook": "Always knocking it off?"},
+  {"angle": "Restless Sleeper", "hook": "Wake up with it gone?"}
+]

@@ -27,7 +27,7 @@ Picky Products is a Pinterest-focused affiliate marketing side project. The goal
 
 - **Products DB:** `ddf18096-68b1-8219-bb44-01b7fa5c9611` (collection: `a2c18096-68b1-82cf-87d5-075ab33cfb3c`)
 - **Distribution DB:** `c7718096-68b1-83ea-8ab2-01b6e3a2b2fe` (collection: `34618096-68b1-8227-ade9-0785f977dfae`)
-- `Enrichment Status` field (Products DB) valid values: `"Empty"`, `"Candidate"`, `"Enriched"`, `"Scheduled"`, `"Distributed"`. Set to `"Scheduled"` by `/generate-pins` once images are live and pins are queued for the daily publisher.
+- `Status` field (Products DB) valid values: `"Candidate"`, `"Processed"`, `"Scheduled"`, `"Published"`. Set to `"Processed"` by `/process-product`. Set to `"Scheduled"` by `/generate-pins` once images are live and queued. Set to `"Published"` by `publish_due_pins.py` once all 9 pins are live on Pinterest.
 - Distribution DB `Affiliate Link` is a **rollup** from the Product relation — read-only, auto-populated.
 - Distribution DB `Angle` valid values: `"Hot Sleeper"`, `"Light Sleeper"`, `"Anxious/Insomniac"`. `"Restless Sleeper"` is not a valid select option — omit the field when writing Restless Sleeper pins.
 
@@ -45,7 +45,7 @@ Drop `product.jpg` into `pins/<product-slug>/` (save the highest-res image from 
 Run `/generate-pins <product name>`. The skill runs `generate_pins.py`, copies images to `docs/pins/<slug>/`, updates Notion status → `Image Created`, and commits and pushes so images are live at `https://mjorquera.github.io/picky-products/pins/<slug>/`.
 
 **Step 5 — Daily publisher handles the rest**
-`publish_due_pins.py` runs automatically via Cowork at 9 PM local. It picks up pins where `publish_at <= now (UTC)`, sends them to the Make webhook → Pinterest, updates Notion → `Scheduled`, and moves completed product folders to `pins/scheduled/`.
+`publish_due_pins.py` runs automatically via Cowork at 9 PM local. It picks up pins where `publish_at <= now (UTC)`, sends them to the Make webhook → Pinterest, updates each Distribution DB record → `Published`, and when all 9 are done updates the Products DB → `Published` and moves the folder to `pins/scheduled/`.
 
 **Pinterest boards:** All pins go to the **UK Comfort Products for Sleep** board.
 
