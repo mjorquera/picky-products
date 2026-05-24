@@ -4,24 +4,24 @@ description: |
   Create Pinterest pin distribution records for a Picky Products item. Looks up
   the product in Notion, writes copy for 9 pins (3 angles × 3 variants), creates
   Distribution DB records, asks for a start date, writes hooks.json and
-  schedule_meta.json with 1 pin/day scheduling, and sets the product Status to
-  Processed. Use when processing a new product for Pinterest distribution.
+  schedule_meta.json with 1 pin/day scheduling, and auto-downloads the product
+  image from Amazon CDN. Use when processing a new product for Pinterest distribution.
 license: MIT
 compatibility: claude-code
 allowed-tools:
   - Read
   - Write
   - Bash
+  - Skill
   - AskUserQuestion
-  - mcp__notion__notion-search
-  - mcp__notion__notion-fetch
-  - mcp__notion__notion-create-pages
-  - mcp__notion__notion-update-page
+  - mcp__notion__API-query-data-source
+  - mcp__notion__API-post-page
+  - mcp__notion__API-patch-page
 ---
 
 # process-product
 
-Process a Picky Products item end-to-end: generate copy, create Notion distribution records, write `hooks.json`, ask for a start date, and write `schedule_meta.json` with 1 pin/day scheduling.
+Process a Picky Products item end-to-end: generate copy, create Notion distribution records, write `hooks.json`, auto-download the product image, ask for a start date, write `schedule_meta.json` with 1 pin/day scheduling, then automatically run `/generate-pins` if the image was downloaded successfully.
 
 ## Invocation
 
@@ -47,18 +47,14 @@ Create the folder `pins/<product-slug>/` in the project root if it doesn't alrea
 
 ## Step 2 — Look up product in Notion
 
-Search for the product using `notion-search`:
-- `query`: the product name
-- `data_source_url`: `collection://a2c18096-68b1-82cf-87d5-075ab33cfb3c`
+Query the Products DB using `mcp__notion__API-query-data-source`:
+- `data_source_id`: `a2c18096-68b1-82cf-87d5-075ab33cfb3c`
+- Filter: `{"property": "Product Name", "title": {"contains": "<product name>"}}`
 
-This returns matching pages. Take the closest title match.
-
-Then fetch the full record using `notion-fetch`:
-- `id`: the page `id` from the search result
-
-Extract from the fetched page `properties`:
+Extract from the result:
 - `id` — the Notion page ID for the Product record
-- `Affiliate Link` — the affiliate link URL
+- `properties.Affiliate Link.url` — the affiliate link
+- `properties["Amazon Main Image URL"].url` — the Amazon CDN image URL (may be null — handle gracefully)
 
 **Affiliate link validation:** the correct Amazon Associates tag is `pickyproducts-21`. If the extracted URL contains `pickyprod-21` (no 's'), it is wrong — stop and report the mismatch before creating any Distribution records. If the link is an `amzn.to` short URL, accept it as-is (these resolve correctly).
 
@@ -118,11 +114,11 @@ Generate title, description, and hook for each of the 9 pins (3 angles × 3 pins
 
 ## Step 5 — Create 9 Notion Distribution DB records
 
-Create all 9 records in parallel using `notion-create-pages`.
+Create all 9 records in parallel using `mcp__notion__API-post-page`.
 
 **Parent:**
 ```json
-{"type": "data_source_id", "data_source_id": "34618096-68b1-8227-ade9-0785f977dfae"}
+{"type": "database_id", "database_id": "c7718096-68b1-83ea-8ab2-01b6e3a2b2fe"}
 ```
 
 **Field mapping per record:**
@@ -134,7 +130,7 @@ Create all 9 records in parallel using `notion-create-pages`.
 | Angle label | `Angle` | select — omit for Restless Sleeper |
 | Variant | `Variant` | select: "A", "B", or "C" |
 | Hook text | `Hook` | rich_text — only set for B and C variants |
-| Product page URL | `Product` | JSON string: `"[\"https://www.notion.so/<product-page-id-no-dashes>\"]"` — strip dashes from page ID for the URL |
+| Product page ID | `Product` | relation: `[{"id": "<product-page-id>"}]` |
 | — | `Status` | select: "Candidate" |
 | — | `Channel` | select: "Pinterest" |
 
@@ -150,23 +146,48 @@ Valid `Angle` select values: `"Hot Sleeper"`, `"Light Sleeper"`, `"Anxious/Insom
 
 Write to `pins/<product-slug>/hooks.json`.
 
-Format: array of 9 objects in pin order (angle 1 × 3, angle 2 × 3, angle 3 × 3).
+**Format:** a JSON object with `amazon_image_url` at the top level and a `pins` array of 9 objects in pin order (angle 1 × 3, angle 2 × 3, angle 3 × 3).
 
 ```json
-[
-  {"angle": "Angle 1 Label", "hook": null},
-  {"angle": "Angle 1 Label", "hook": "Hook text for pin 2"},
-  {"angle": "Angle 1 Label", "hook": "Hook text for pin 3"},
-  {"angle": "Angle 2 Label", "hook": null},
-  {"angle": "Angle 2 Label", "hook": "Hook text for pin 5"},
-  {"angle": "Angle 2 Label", "hook": "Hook text for pin 6"},
-  {"angle": "Angle 3 Label", "hook": null},
-  {"angle": "Angle 3 Label", "hook": "Hook text for pin 8"},
-  {"angle": "Angle 3 Label", "hook": "Hook text for pin 9"}
-]
+{
+  "amazon_image_url": "<Amazon Main Image URL from Step 2, or null if not available>",
+  "pins": [
+    {"angle": "Angle 1 Label", "hook": null},
+    {"angle": "Angle 1 Label", "hook": "Hook text for pin 2"},
+    {"angle": "Angle 1 Label", "hook": "Hook text for pin 3"},
+    {"angle": "Angle 2 Label", "hook": null},
+    {"angle": "Angle 2 Label", "hook": "Hook text for pin 5"},
+    {"angle": "Angle 2 Label", "hook": "Hook text for pin 6"},
+    {"angle": "Angle 3 Label", "hook": null},
+    {"angle": "Angle 3 Label", "hook": "Hook text for pin 8"},
+    {"angle": "Angle 3 Label", "hook": "Hook text for pin 9"}
+  ]
+}
 ```
 
 Hook text must match exactly what was written to the Notion `Hook` field.
+
+If `Amazon Main Image URL` was null in Notion, set `amazon_image_url` to `null` and note this — the user will need to drop `product.jpg` manually before `/generate-pins` can run.
+
+---
+
+## Step 6.5 — Auto-download product image
+
+After writing `hooks.json`, run `fetch_product_image.py` to download the product image automatically:
+
+```bash
+python3 fetch_product_image.py <product-slug>
+```
+
+The script:
+- Reads `amazon_image_url` from `hooks.json`
+- Upgrades the Amazon CDN URL to full resolution (`_AC_SL1500_`)
+- Downloads and saves as `pins/<product-slug>/product.jpg`
+- Skips if `product.jpg` already exists and is ≥500KB
+- Validates the downloaded image is ≥600px on the short edge
+- Exits with a clear error message (not a stack trace) if the CDN returns a non-200 status
+
+Track the outcome — you will need it in the Done step to decide whether to chain into `/generate-pins`.
 
 ---
 
@@ -197,12 +218,10 @@ For each date, apply the priority time slot based on weekday (all times UTC):
 
 Format each as ISO 8601 UTC: `2026-05-23T20:00:00Z`
 
-Update all 9 Notion records in parallel. Use expanded date properties:
+Update all 9 Notion records in parallel using `mcp__notion__API-patch-page`:
 ```json
-{"date:Publish Date:start": "2026-06-02T20:00:00Z", "date:Publish Date:is_datetime": 1}
+{"Publish Date": {"date": {"start": "YYYY-MM-DDTHH:MM:SSZ"}}}
 ```
-
-Set `is_datetime` to `1` — the publisher relies on time precision, not just date.
 
 ---
 
@@ -242,7 +261,7 @@ pin-9-restless-hook-b.png
 
 ```json
 {
-  "product_slug": "slumberdown-british-wool-pillow",
+  "product_slug": "<product-slug>",
   "product_page_id": "<product page ID from step 2>",
   "records": [
     {
@@ -263,12 +282,11 @@ pin-9-restless-hook-b.png
 
 ## Step 10 — Update product status in Notion
 
-Update the product record using `notion-update-page`:
+Update the product record using `mcp__notion__API-patch-page`:
 - `page_id`: the product page ID from step 2
-- `command`: `update_properties`
 
 ```json
-{"Status": "Processed"}
+{"Status": {"select": {"name": "Processed"}}}
 ```
 
 ---
@@ -281,5 +299,8 @@ Report a summary:
 - Notion records created (count)
 - Start date and end date of the schedule
 - Files written: `hooks.json`, `schedule_meta.json`
+- Image status: auto-downloaded ✅ or manual drop required ⚠️
 
-Next step for the user: drop `product.jpg` into `pins/<product-slug>/` then run `/generate-pins <product-name>`.
+**If the image was downloaded successfully (Step 6.5 succeeded):** proceed immediately — invoke the `generate-pins` skill using the Skill tool, passing the product name as the argument. Do not ask the user to run it separately.
+
+**If the image download failed or `amazon_image_url` was null:** report the error clearly. Tell the user to drop `product.jpg` into `pins/<product-slug>/` then run `/generate-pins <product-name>`.
