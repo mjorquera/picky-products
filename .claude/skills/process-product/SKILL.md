@@ -203,20 +203,44 @@ Accept a date in `YYYY-MM-DD` format. Parse it and validate it's a real date.
 
 ## Step 8 — Calculate timestamps and update Notion
 
+### 8a — Scan existing schedules
+
+Before assigning any timestamps, scan all existing `pins/*/schedule_meta.json` files (the current product's folder won't have one yet).
+
+Run:
+```bash
+find pins -name schedule_meta.json
+```
+
+Read each file and extract the `publish_at` field from every record. Build a map of already-booked times keyed by date (YYYY-MM-DD), storing only the HH:MM portion of each timestamp:
+
+```
+taken_times = {
+  "2026-05-24": ["09:00", "20:00"],
+  "2026-05-25": ["20:00"],
+  ...
+}
+```
+
+### 8b — Assign timestamps
+
 Calculate 9 consecutive dates starting from the provided date (1 pin per day, no gaps).
 
-For each date, apply the priority time slot based on weekday (all times UTC):
+**Time slot pool (UTC):**
 
-| Weekday | Time (UTC) |
+| Priority | Slot |
 |---|---|
-| Sunday | 20:00 |
-| Monday | 21:00 |
-| Tuesday | 20:00 |
-| Thursday | 10:00 |
-| Saturday | 09:00 |
-| All other days | 20:00 |
+| 1st choice | 09:00 |
+| 2nd choice | 20:00 |
+| Overflow fallback | 11:00 |
 
-Format each as ISO 8601 UTC: `2026-05-23T20:00:00Z`
+For each date:
+1. Check `taken_times[date]` — the already-booked HH:MM strings for that day
+2. Pick the **first** slot from `["09:00", "20:00"]` that is NOT in the booked list
+3. If both are taken (3+ products on the same day), use `11:00`
+4. Format as ISO 8601 UTC: `YYYY-MM-DDTHH:MM:SSZ`
+
+### 8c — Update Notion
 
 Update all 9 Notion records in parallel using `mcp__notion__API-patch-page`:
 ```json
