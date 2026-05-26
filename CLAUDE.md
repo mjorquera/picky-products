@@ -41,7 +41,7 @@ Run `/process-product <product name>`. The skill handles everything end-to-end: 
 If the auto-download fails (CDN error, missing URL in Notion, or image below 600px), the skill reports it — drop `product.jpg` manually into `pins/<product-slug>/` then run `/generate-pins <product-name>`.
 
 **Step 2 — Daily publisher handles the rest**
-`publish_due_pins.py` runs automatically via Cowork at 9 PM local. It picks up pins where `publish_at <= now (UTC)`, sends them to the Make webhook → Pinterest, updates each Distribution DB record → `Published`, and when all 9 are done updates the Products DB → `Published` and moves the folder to `pins/scheduled/`.
+`publish_due_pins.py` runs automatically via two Cowork tasks (09:00 UTC and 20:00 UTC — matching the two scheduling slots). It picks up pins where `publish_at <= now (UTC)`, sends them to the Make webhook → Pinterest, updates each Distribution DB record → `Published`, and when all 9 are done updates the Products DB → `Published` and moves the folder to `pins/scheduled/`.
 
 **Pinterest boards:** All pins go to the **UK Comfort Products for Sleep** board.
 
@@ -49,7 +49,7 @@ If the auto-download fails (CDN error, missing URL in Notion, or image below 600
 
 ## Pinterest scheduling
 
-- **`publish_due_pins.py`** — daily publisher, run automatically by Cowork (9 PM local). Publishes one-by-one based on `publish_at`.
+- **`publish_due_pins.py`** — daily publisher, run automatically by two Cowork tasks at 09:00 UTC and 20:00 UTC (10:15 BST / 21:15 BST in summer; 09:15 / 20:15 GMT in winter). Publishes one-by-one based on `publish_at`.
 - **`schedule_via_make.py`** — manual full-batch publisher. Sends all 9 pins at once. Use for testing or emergency publish only.
 
 Make's Pinterest connector has Standard API access, bypassing the Trial restriction on the local Pinterest app (App ID `1570355`).
@@ -123,7 +123,7 @@ pins/<product-slug>/
 pins/
   <product-slug>/       ← active: processing or awaiting scheduling
   scheduled/
-    <product-slug>/     ← all 9 pins scheduled in Pinterest
+    <product-slug>/     ← queued for Pinterest publishing; may still have future-dated pins pending
 ```
 
 ---
