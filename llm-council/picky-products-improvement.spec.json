@@ -1,0 +1,19 @@
+{
+  "task": "Analyse Picky Products and produce a prioritised improvement plan. Picky Products is a Pinterest-focused affiliate marketing side project targeting UK sleep product buyers. It is largely autonomous — AI agents handle content selection, image generation, and daily pin publishing. The owner's goal is to earn the first £ of affiliate revenue with under 30 minutes of manual work per week. Known gaps: pin image quality feels generic, and there is no visibility into Pinterest performance. New channels are open for analysis if they have a clear revenue advantage.\n\nProject stack:\n- Notion: Products DB and Distribution DB (source of truth)\n- Python + Pillow: pin image generation (1000x1500px, white background, rounded pill caption)\n- Pinterest API via Make webhook: daily publisher posts 1 pin/day\n- Amazon Associates UK: monetisation (PA API pending at 3 qualifying sales)\n- GitHub Pages: hosts pin images for the Make webhook\n\nCurrent state:\n- 10 products in Candidate status (awaiting /process-product)\n- 2 products in active publishing queue (SKYNY Cooling Pillow, Slumberdown British Wool Pillow)\n- 3 previously distributed products (Silentnight Cool Touch Pillow, LunaCore Hybrid Pillow, MUSICOZY Bluetooth Sleep Mask)\n- Personas: Hot Sleepers, Light Sleepers, Anxious/Insomniac Sleepers (3 per product)\n- 9 pins per product: 3 angles × 3 variants (clean label + 2 hook variants)\n- Publishing cadence: 1 pin/day via daily cron\n\nContent workflow:\n1. /process-product: looks up product in Notion, writes copy for 9 pins, creates Distribution DB records, writes hooks.json and schedule_meta.json\n2. Add product.jpg manually (from Amazon listing)\n3. /generate-pins: runs generate_pins.py, copies to GitHub Pages, updates Notion status\n4. publish_due_pins.py: daily publisher sends due pins to Make → Pinterest\n\nPin image template:\n- White background\n- Large product image centred\n- Rounded pill at bottom with bold dark text (hook or angle label)\n- No A/B testing of templates currently\n\nAnalyse and produce a prioritised improvement plan covering:\n1. Pin image quality and visual differentiation\n2. Pinterest performance visibility (analytics, feedback loops)\n3. Monetisation acceleration (path to first £, PA API, link optimisation)\n4. Content pipeline throughput (processing 10 waiting Candidates faster)\n5. New channel opportunities if clearly higher ROI than Pinterest\n6. Operational efficiency (reducing the under-30-min weekly budget further)\n\nPrioritise recommendations by revenue impact and implementation effort. Flag any quick wins (high impact, low effort) explicitly.",
+  "constraints": [
+    "Owner has under 30 minutes per week for manual work — all recommendations must account for this",
+    "Solo operator — no team, no paid tools budget beyond what's already in use",
+    "UK market only — Amazon UK, UK buyer personas, British English throughout",
+    "Pinterest is primary channel — do not recommend abandoning it",
+    "Notion, Python, and Claude Code are available for automation",
+    "No paid advertising — organic growth only"
+  ],
+  "agents": {
+    "planners": [
+      { "name": "claude-sonnet-a", "kind": "claude", "model": "sonnet", "extra_args": ["--max-turns", "10"] },
+      { "name": "claude-sonnet-b", "kind": "claude", "model": "sonnet", "extra_args": ["--max-turns", "10"] },
+      { "name": "claude-sonnet-c", "kind": "claude", "model": "sonnet", "extra_args": ["--max-turns", "10"] }
+    ],
+    "judge": { "name": "claude-sonnet-judge", "kind": "claude", "model": "sonnet", "extra_args": ["--max-turns", "10"] }
+  }
+}

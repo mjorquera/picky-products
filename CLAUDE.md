@@ -52,6 +52,8 @@ If the auto-download fails (CDN error, missing URL in Notion, or image below 600
 - **`publish_due_pins.py`** — daily publisher, run automatically by two Cowork tasks at 09:00 UTC and 20:00 UTC (10:15 BST / 21:15 BST in summer; 09:15 / 20:15 GMT in winter). Publishes one-by-one based on `publish_at`.
 - **`schedule_via_make.py`** — manual full-batch publisher. Sends all 9 pins at once. Use for testing or emergency publish only.
 
+**Valid `publish_at` times (UTC): `09:00` and `20:00` only.** Any other time (e.g. `21:00`, `10:00`) falls outside both publisher windows and will not be picked up until the following day's 09:00 run at the earliest. The process-product skill enforces this — do not assign other times manually.
+
 Make's Pinterest connector has Standard API access, bypassing the Trial restriction on the local Pinterest app (App ID `1570355`).
 
 **Timing note:** Make posts pins immediately (no native `publish_at` support). The timestamps in `schedule_meta.json` control when `publish_due_pins.py` sends each pin — pins land on Pinterest within ~1 hour of the scheduled time.

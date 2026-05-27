@@ -109,6 +109,8 @@ def main():
         return
 
     due = []  # list of (slug, record_dict)
+    VALID_TIMES = {"09:00", "20:00"}  # UTC times aligned with Cowork publisher tasks
+    bad_slots = []  # pending pins with unexpected publish times
 
     for meta_path in meta_files:
         slug = os.path.basename(os.path.dirname(meta_path))
@@ -124,6 +126,13 @@ def main():
             except Exception:
                 continue
 
+            # Warn if this pin's time falls outside the two publisher windows
+            hhmm = raw_date[11:16]  # e.g. "21:00"
+            if hhmm not in VALID_TIMES:
+                status = notion_get_status(notion_token, rec["notion_page_id"])
+                if status not in ("Published",):
+                    bad_slots.append((slug, raw_date, rec.get("pin_file", "")))
+
             if pub_dt > now:
                 continue  # Not due yet
 
@@ -133,6 +142,13 @@ def main():
                 continue
 
             due.append((slug, rec))
+
+    if bad_slots:
+        print(f"⚠️  WARNING: {len(bad_slots)} pending pin(s) have publish times outside 09:00/20:00 UTC")
+        print("   These will not be picked up automatically — fix publish_at in schedule_meta.json:")
+        for slug, pub, fname in bad_slots:
+            print(f"   {slug}  {pub}  {fname}")
+        print()
 
     # ── Report ────────────────────────────────────────────────────────────────
     if not due:
