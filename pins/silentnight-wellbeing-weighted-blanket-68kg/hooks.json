@@ -1,0 +1,14 @@
+{
+  "amazon_image_url": "https://m.media-amazon.com/images/I/71ap5XDAcEL._AC_SY300_SX300_QL70_ML2_.jpg",
+  "pins": [
+    {"angle": "Anxious/Insomniac", "hook": null},
+    {"angle": "Anxious/Insomniac", "hook": "Still can't settle at night?"},
+    {"angle": "Anxious/Insomniac", "hook": "Anxiety keeping you awake?"},
+    {"angle": "Light Sleeper", "hook": null},
+    {"angle": "Light Sleeper", "hook": "Waking through the night?"},
+    {"angle": "Light Sleeper", "hook": "Light sleep ruining your rest?"},
+    {"angle": "Restless Sleeper", "hook": null},
+    {"angle": "Restless Sleeper", "hook": "Can't stop moving at night?"},
+    {"angle": "Restless Sleeper", "hook": "Restless nights wearing you out?"}
+  ]
+}
