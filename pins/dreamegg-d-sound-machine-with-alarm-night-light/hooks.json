@@ -1,0 +1,14 @@
+{
+  "amazon_image_url": "https://m.media-amazon.com/images/I/71ijKECtlNL._AC_SY300_SX300_QL70_ML2_.jpg",
+  "pins": [
+    {"angle": "Light Sleeper", "hook": null},
+    {"angle": "Light Sleeper", "hook": "Still waking at every noise?"},
+    {"angle": "Light Sleeper", "hook": "Noise ruining your sleep?"},
+    {"angle": "Anxious/Insomniac", "hook": null},
+    {"angle": "Anxious/Insomniac", "hook": "Mind too busy to sleep?"},
+    {"angle": "Anxious/Insomniac", "hook": "Can't switch off at night?"},
+    {"angle": "Restless Sleeper", "hook": null},
+    {"angle": "Restless Sleeper", "hook": "Wake up on your terms."},
+    {"angle": "Restless Sleeper", "hook": "Still tossing and turning?"}
+  ]
+}
