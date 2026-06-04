@@ -103,15 +103,19 @@ NOTION_TOKEN="ntn_..."
 ## Image generation
 
 **Script:** `generate_pins.py <product_slug>`  
-**Canvas:** 1000×1500px — white background, large product image, rounded pill at bottom with bold dark text  
+**Canvas:** 1000×1500px  
 **Prerequisites:** `product.jpg` and `hooks.json` must both be present in `pins/<product-slug>/` before running.
+
+**Templates:**
+- **Template C (clean pins):** persona-tinted background (Hot Sleeper `#E8F4FD`, Light Sleeper `#E8EEF5`, Anxious/Insomniac `#F0EEF8`), product image centred, no pill, `#ad` at bottom-right.
+- **Template B (hook pins):** white background, product image, rounded pill with hook text, `#ad` at bottom-right. Optional `£XX on Amazon` sub-line if `price` is set in `hooks.json`.
 
 **Output:**
 ```
 pins/<product-slug>/
   hooks.json
   product.jpg
-  pin-1-{angle}-clean.png       ← Template A: pill = angle label
+  pin-1-{angle}-clean.png       ← Template C: tinted background, no pill
   pin-2-{angle}-hook-a.png      ← Template B: hook variant A
   pin-3-{angle}-hook-b.png      ← Template B: hook variant B
   ... (9 total)
