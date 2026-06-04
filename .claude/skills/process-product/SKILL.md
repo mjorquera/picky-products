@@ -151,6 +151,7 @@ Write to `pins/<product-slug>/hooks.json`.
 ```json
 {
   "amazon_image_url": "<Amazon Main Image URL from Step 2, or null if not available>",
+  "price": "<price string from Step 7b, e.g. \"29.99\", or null if skipped>",
   "pins": [
     {"angle": "Angle 1 Label", "hook": null},
     {"angle": "Angle 1 Label", "hook": "Hook text for pin 2"},
@@ -166,6 +167,8 @@ Write to `pins/<product-slug>/hooks.json`.
 ```
 
 Hook text must match exactly what was written to the Notion `Hook` field.
+
+`price` is a string with digits only — no `£` sign (e.g. `"29.99"`). Set to `null` if the user skipped. `generate_pins.py` renders it as `£XX on Amazon` beneath the hook text in Template B pills; it has no effect on Template C (clean pins).
 
 If `Amazon Main Image URL` was null in Notion, set `amazon_image_url` to `null` and note this — the user will need to drop `product.jpg` manually before `/generate-pins` can run.
 
@@ -220,13 +223,19 @@ Capture every HH:MM value found, including legacy slots such as `10:00` and `21:
 
 From the `taken` map, determine the **earliest date that has at least one free slot** — this is the minimum viable start date.
 
-### 7b — Ask for start date
+### 7b — Ask for start date and price
 
-Ask the user using `AskUserQuestion`. Include the earliest available date and what the 9-day window would be, so the user can make an informed choice:
+Ask the user using `AskUserQuestion` with two questions in the same call:
 
+**Question 1 — Start date:**
 > "What date should pin 1 publish? Slots are fully booked until [date − 1] — earliest available is [earliest date]."
 
-Accept a date in `YYYY-MM-DD` format. Parse it and validate it's a real date.
+Options: earliest available date, the day after, two days after. User can also select Other to type a custom date. Accept `YYYY-MM-DD` format; parse and validate it's a real date.
+
+**Question 2 — Product price (optional):**
+> "Add a price to the pin pill? Renders as '£XX on Amazon' beneath the hook text."
+
+Options: "Skip — no price", and a few plausible round numbers based on the product category (e.g. "£19.99", "£29.99", "£39.99"). User can select Other to type the exact price. If the user selects "Skip", set `price` to `null`; otherwise store the value as a string (digits only, no `£` sign — e.g. `"29.99"`).
 
 ---
 
