@@ -158,6 +158,19 @@ Weekly performance reports live in `analytics/`. One file per week, named `YYYY-
 
 ---
 
+## Plan
+
+Active roadmap: `plan.md` in this directory. Ordered by impact — read it before starting work each session.
+
+- **Phase 0 (highest priority):** Product landing pages on GitHub Pages + Pinterest board split by angle — fixes the distribution suppression caused by direct affiliate links.
+- **Phase 1:** Content pipeline — process remaining Candidates, archive non-sleep ones.
+- **Phase 3:** Pin ID capture + weekly analytics sync.
+- **Phase 4:** Weekly digest script, PA API readiness.
+
+Original LLM council plan: `llm-council/runs/20260523-analyse-picky-products-and-produce-a-pri/final-plan-clean.md`
+
+---
+
 ## Session close
 
 Run `/bye` at the end of every working session. The skill reviews the session for corrections and feedback, then updates the relevant skill files so the next session starts better.
