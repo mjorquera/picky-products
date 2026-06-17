@@ -1,0 +1,15 @@
+{
+  "amazon_image_url": "https://m.media-amazon.com/images/I/81KG6wim4AL._AC_UL320_.jpg",
+  "price": null,
+  "pins": [
+    {"angle": "Hot Sleeper", "hook": null},
+    {"angle": "Hot Sleeper", "hook": "Wake up sweating?"},
+    {"angle": "Hot Sleeper", "hook": "Too hot to sleep?"},
+    {"angle": "Light Sleeper", "hook": null},
+    {"angle": "Light Sleeper", "hook": "Can't get comfortable?"},
+    {"angle": "Light Sleeper", "hook": "Still adjusting all night?"},
+    {"angle": "Restless Sleeper", "hook": null},
+    {"angle": "Restless Sleeper", "hook": "Move all night long?"},
+    {"angle": "Restless Sleeper", "hook": "Pillow flat by morning?"}
+  ]
+}

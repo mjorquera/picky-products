@@ -1,0 +1,15 @@
+{
+  "amazon_image_url": "https://m.media-amazon.com/images/I/61h+ie0D0DS._AC_SY300_SX300_QL70_ML2_.jpg",
+  "price": null,
+  "pins": [
+    {"angle": "Light Sleeper", "hook": null},
+    {"angle": "Light Sleeper", "hook": "Every sound waking you up?"},
+    {"angle": "Light Sleeper", "hook": "25 sounds to sleep through"},
+    {"angle": "Anxious/Insomniac", "hook": null},
+    {"angle": "Anxious/Insomniac", "hook": "Can't switch off tonight?"},
+    {"angle": "Anxious/Insomniac", "hook": "Give your brain something calm"},
+    {"angle": "Restless Sleeper", "hook": null},
+    {"angle": "Restless Sleeper", "hook": "Waking up at 3am again?"},
+    {"angle": "Restless Sleeper", "hook": "Night light, calm sounds"}
+  ]
+}

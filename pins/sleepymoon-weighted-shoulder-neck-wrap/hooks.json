@@ -1,0 +1,14 @@
+{
+  "amazon_image_url": "https://m.media-amazon.com/images/I/81wdhbPJJSL._AC_SY300_SX300_QL70_ML2_.jpg",
+  "pins": [
+    {"angle": "Anxious/Insomniac", "hook": null},
+    {"angle": "Anxious/Insomniac", "hook": "Can't unwind at night?"},
+    {"angle": "Anxious/Insomniac", "hook": "Still tense at bedtime?"},
+    {"angle": "Restless Sleeper", "hook": null},
+    {"angle": "Restless Sleeper", "hook": "Waking with a stiff neck?"},
+    {"angle": "Restless Sleeper", "hook": "Upper body won't relax?"},
+    {"angle": "Light Sleeper", "hook": null},
+    {"angle": "Light Sleeper", "hook": "Taking ages to fall asleep?"},
+    {"angle": "Light Sleeper", "hook": "Mind racing before bed?"}
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "amazon_image_url": "https://m.media-amazon.com/images/I/71VmtUYZ-xL._AC_UL320_.jpg",
+  "price": null,
+  "pins": [
+    {"angle": "Hot Sleeper", "hook": null},
+    {"angle": "Hot Sleeper", "hook": "Waking up too hot?"},
+    {"angle": "Hot Sleeper", "hook": "Stay cool all night"},
+    {"angle": "Light Sleeper", "hook": null},
+    {"angle": "Light Sleeper", "hook": "Your bedding might be the issue"},
+    {"angle": "Light Sleeper", "hook": "Does your bedding wake you?"},
+    {"angle": "Restless Sleeper", "hook": null},
+    {"angle": "Restless Sleeper", "hook": "Tossing and turning all night?"},
+    {"angle": "Restless Sleeper", "hook": "Bedding that moves with you"}
+  ]
+}

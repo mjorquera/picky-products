@@ -1,0 +1,15 @@
+{
+  "amazon_image_url": "https://m.media-amazon.com/images/I/81cwXYo-ghL._AC_SY300_SX300_QL70_ML2_.jpg",
+  "price": "25.99",
+  "pins": [
+    {"angle": "Hot Sleeper", "hook": null},
+    {"angle": "Hot Sleeper", "hook": "Hot head, cold pillow?"},
+    {"angle": "Hot Sleeper", "hook": "Sleep on the cool side"},
+    {"angle": "Light Sleeper", "hook": null},
+    {"angle": "Light Sleeper", "hook": "Waking from discomfort?"},
+    {"angle": "Light Sleeper", "hook": "Your pillow shouldn't wake you"},
+    {"angle": "Restless Sleeper", "hook": null},
+    {"angle": "Restless Sleeper", "hook": "Always repositioning your pillow?"},
+    {"angle": "Restless Sleeper", "hook": "Neck support every position"}
+  ]
+}

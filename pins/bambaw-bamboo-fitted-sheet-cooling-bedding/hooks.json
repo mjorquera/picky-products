@@ -1,0 +1,15 @@
+{
+  "amazon_image_url": "https://m.media-amazon.com/images/I/71n55r9WkeL._AC_UL320_.jpg",
+  "price": null,
+  "pins": [
+    {"angle": "Hot Sleeper", "hook": null},
+    {"angle": "Hot Sleeper", "hook": "Too hot at night?"},
+    {"angle": "Hot Sleeper", "hook": "Sweating through the night?"},
+    {"angle": "Light Sleeper", "hook": null},
+    {"angle": "Light Sleeper", "hook": "Sheets waking you up?"},
+    {"angle": "Light Sleeper", "hook": "Fabric keeping you awake?"},
+    {"angle": "Anxious/Insomniac", "hook": null},
+    {"angle": "Anxious/Insomniac", "hook": "Can't wind down at night?"},
+    {"angle": "Anxious/Insomniac", "hook": "Bedding causing you stress?"}
+  ]
+}
