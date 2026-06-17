@@ -16,6 +16,7 @@ What it does:
 Run daily via Cowork scheduled task.
 """
 
+import re
 import sys
 import os
 import json
@@ -34,8 +35,31 @@ WORKSPACE    = os.path.dirname(os.path.abspath(__file__))
 ENV_PATH     = os.path.join(WORKSPACE, ".env")
 MAKE_WEBHOOK = "https://hook.eu2.make.com/1ug4xsjoxp8jycg7dungek86smnuuorn"
 GITHUB_PAGES = "https://mjorquera.github.io/picky-products"
-BOARD_ID     = "1063764443174541558"
+BOARD_ID     = "1063764443174541558"  # catch-all / Restless Sleeper
 NOTION_API   = "https://api.notion.com/v1"
+
+# Angle slug → .env key for the angle-specific board
+# If the key is absent from .env, falls back to BOARD_ID (catch-all)
+ANGLE_BOARD_ENV_KEYS = {
+    "hot":      "PINTEREST_BOARD_HOT",
+    "light":    "PINTEREST_BOARD_LIGHT",
+    "anxious":  "PINTEREST_BOARD_ANXIOUS",
+    "restless": None,  # always use catch-all
+}
+
+_ANGLE_RE = re.compile(r"pin-\d+-(hot|light|anxious|restless)-")
+
+
+def board_id_for_pin(pin_file: str, env: dict) -> str:
+    """Return the correct board ID for a pin based on its angle slug."""
+    m = _ANGLE_RE.match(pin_file)
+    if not m:
+        return BOARD_ID
+    angle_slug = m.group(1)
+    env_key = ANGLE_BOARD_ENV_KEYS.get(angle_slug)
+    if env_key:
+        return env.get(env_key) or BOARD_ID
+    return BOARD_ID
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
@@ -77,9 +101,11 @@ def notion_set_status(token: str, page_id: str, status: str = "Published") -> bo
 
 
 def send_to_make(records: list) -> bool:
+    # board_id is now per-record; top-level field kept for backwards compatibility
+    # with any Make scenarios that still reference it
     resp = requests.post(
         MAKE_WEBHOOK,
-        json={"board_id": BOARD_ID, "records": records},
+        json={"records": records},
         timeout=30,
     )
     return resp.status_code in (200, 201, 202, 204)
@@ -175,6 +201,7 @@ def main():
             "affiliate_link": rec["affiliate_link"],
             "publish_at":     rec["publish_at"],
             "image_url":      f"{GITHUB_PAGES}/pins/{slug}/{rec['pin_file']}",
+            "board_id":       board_id_for_pin(rec.get("pin_file", ""), env),
         }
         for slug, rec in due
     ]

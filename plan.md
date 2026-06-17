@@ -28,7 +28,7 @@ Root cause of the -96% impression drop and 10+ weeks of 0 saves: pins link direc
 - Add landing page generation to `/process-product` skill (runs after image download, writes the HTML)
 - Backfill: update existing Scheduled/Published Distribution DB records with the new landing page URL
 
-### 0.2: Pinterest board split by angle ⬜
+### 0.2: Pinterest board split by angle ✅ (code done — 2 manual steps remaining)
 
 **Why:** One board = one niche signal = capped distribution surface. Angle-specific boards give the algorithm stronger categorisation to surface content to the right users.
 
