@@ -106,7 +106,9 @@ PINTEREST_BOARD_RESTLESS="..."     # Restless Sleeper — Sleep Accessories
 NOTION_TOKEN="ntn_..."
 ```
 
-Angle boards created by running `python3 create_angle_boards.py` once. If angle board keys are absent from `.env`, `publish_due_pins.py` falls back to `PINTEREST_BOARD_ID` for all pins.
+Angle boards created manually on pinterest.com; IDs retrieved with `python3 list_boards.py`. If angle board keys are absent from `.env`, `publish_due_pins.py` falls back to `PINTEREST_BOARD_ID` for all pins.
+
+**Token management:** Pinterest access tokens expire periodically. Run `python3 refresh_pinterest_token.py` to renew without a browser. If the refresh token has also expired, run `python3 pinterest_auth.py` for full re-auth. Pinterest write operations (creating boards, posting pins) must go through Make — the local Trial app token only supports read operations reliably.
 
 ---
 

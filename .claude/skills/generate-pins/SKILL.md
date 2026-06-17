@@ -11,7 +11,7 @@ compatibility: claude-code
 allowed-tools:
   - Read
   - Bash
-  - mcp__notion__notion-update-page
+  - mcp__notion__API-patch-page
 ---
 
 # generate-pins
