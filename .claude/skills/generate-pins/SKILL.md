@@ -73,29 +73,45 @@ cp pins/<product-slug>/pin-*.png docs/pins/<product-slug>/
 
 ---
 
+## Step 4.5 — Generate product landing page
+
+Run the landing page generator. This creates `docs/products/<product-slug>/index.html`, copies `product.jpg` into the docs folder, and updates `schedule_meta.json` so every `affiliate_link` points to the GitHub Pages landing page instead of Amazon directly.
+
+```bash
+python3 generate_landing_page.py <product-slug>
+```
+
+If the script exits with an error, stop and report the error. The landing page is required — it removes the direct-affiliate-link spam signal that suppresses Pinterest distribution.
+
+**Why this matters:** Pinterest suppresses accounts that link pins directly to Amazon affiliate URLs. The landing page is the intermediary that prevents this. The Amazon link becomes the CTA inside the landing page.
+
+---
+
 ## Step 5 — Update Notion status
 
 Read `pins/<product-slug>/schedule_meta.json` to get all 9 `notion_page_id` values and the `product_page_id`.
 
-Update all 9 Distribution DB records in parallel using `notion-update-page` with `command: update_properties`:
+Update all 9 Distribution DB records in parallel using `mcp__notion__API-patch-page`:
 
 ```json
-{"Status": "Image Created"}
+{"Status": {"select": {"name": "Image Created"}}}
 ```
 
 Then update the Products DB record using the `product_page_id`:
 
 ```json
-{"Status": "Scheduled"}
+{"Status": {"select": {"name": "Scheduled"}}}
 ```
 
 ---
 
 ## Step 6 — Commit and push
 
+Stage and commit both the pin images and the landing page together:
+
 ```bash
-git add docs/pins/<product-slug>/
-git commit -m "Add <product-slug> pin images"
+git add docs/pins/<product-slug>/ docs/products/<product-slug>/
+git commit -m "Add <product-slug> pin images and landing page"
 git push
 ```
 
@@ -107,7 +123,8 @@ git push
 
 Report:
 - 9 images generated and pushed to GitHub Pages
+- Landing page live at: `https://mjorquera.github.io/picky-products/products/<product-slug>/`
 - Distribution DB records → Image Created; Products DB → Scheduled
-- Images live at: `https://mjorquera.github.io/picky-products/pins/<product-slug>/`
+- `schedule_meta.json` affiliate_link updated to landing page URL (Amazon link is the CTA inside the page)
 
 The daily publisher will pick up pins automatically from their scheduled `publish_at` times.
