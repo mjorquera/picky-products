@@ -44,7 +44,7 @@ ANGLE_BOARD_ENV_KEYS = {
     "hot":      "PINTEREST_BOARD_HOT",
     "light":    "PINTEREST_BOARD_LIGHT",
     "anxious":  "PINTEREST_BOARD_ANXIOUS",
-    "restless": None,  # always use catch-all
+    "restless": "PINTEREST_BOARD_RESTLESS",
 }
 
 _ANGLE_RE = re.compile(r"pin-\d+-(hot|light|anxious|restless)-")

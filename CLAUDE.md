@@ -98,10 +98,11 @@ PINTEREST_CLIENT_ID="..."
 PINTEREST_CLIENT_SECRET="..."
 PINTEREST_ACCESS_TOKEN="..."
 PINTEREST_REFRESH_TOKEN="..."
-PINTEREST_BOARD_ID="..."           # catch-all board (Restless Sleeper + fallback)
+PINTEREST_BOARD_ID="..."           # catch-all board (fallback only)
 PINTEREST_BOARD_HOT="..."          # Hot Sleeper — Sleep Accessories
 PINTEREST_BOARD_LIGHT="..."        # Light Sleeper — Sleep Accessories
 PINTEREST_BOARD_ANXIOUS="..."      # Anxious Sleeper — Sleep Accessories
+PINTEREST_BOARD_RESTLESS="..."     # Restless Sleeper — Sleep Accessories
 NOTION_TOKEN="ntn_..."
 ```
 
