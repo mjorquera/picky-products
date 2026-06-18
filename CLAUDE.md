@@ -190,9 +190,9 @@ Weekly performance reports live in `analytics/`. One file per week, named `YYYY-
 
 Active roadmap: `plan.md` in this directory. Ordered by impact — read it before starting work each session.
 
-- **Phase 0 (highest priority):** Product landing pages on GitHub Pages + Pinterest board split by angle — fixes the distribution suppression caused by direct affiliate links.
-- **Phase 1:** Content pipeline — process remaining Candidates, archive non-sleep ones.
-- **Phase 3:** Pin ID capture + weekly analytics sync.
+- **Phase 0:** ✅ Complete — landing pages live, boards split by angle.
+- **Phase 1:** One Candidate remaining — Sacred Thread Bamboo Viscose Bed Sheet Set. Off-niche products already published before niche pivot, nothing to archive.
+- **Phase 3:** 3.2 ✅ — `analytics_sync.py` live, Make captures Pin IDs, Cowork syncs weekly. 3.3 (A/B tracking agent) not started.
 - **Phase 4:** Weekly digest script, PA API readiness.
 
 Original LLM council plan: `llm-council/runs/20260523-analyse-picky-products-and-produce-a-pri/final-plan-clean.md`
