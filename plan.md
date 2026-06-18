@@ -75,7 +75,7 @@ Done. `generate_pins.py` renders persona-tinted Template C (clean) and Template 
 
 Done. Weekly analytics reports live in `analytics/` from W21 through W25.
 
-### 3.2: Pin ID capture and metrics sync ⬜
+### 3.2: Pin ID capture and metrics sync 🔄
 
 Needed for data-driven hook selection. Without this, performance assessment is manual and imprecise.
 
@@ -84,6 +84,8 @@ Needed for data-driven hook selection. Without this, performance assessment is m
 - Write `analytics_sync.py`: queries Distribution DB for published pins, calls Pinterest Analytics API v5 (`GET /v5/pins/{pin_id}/analytics?metric_types=IMPRESSION,OUTBOUND_CLICK`), updates Notion weekly
 - Add `Performance` formula: `Outbound Clicks / Impressions * 100`
 - Schedule via Cowork weekly cron
+
+**Status:** `analytics_sync.py` written. Two manual steps remaining: (1) add `Pinterest Pin ID`, `Impressions`, `Outbound Clicks` fields to Distribution DB in Notion; (2) add a Notion "Update a database item" module to the Make scenario after module 6, mapping `{{5.notion_page_id}}` → page ID and `{{6.id}}` → `Pinterest Pin ID`.
 
 ### 3.3: Hook A/B performance tracking agent 🆕 ⬜
 
@@ -121,7 +123,7 @@ Once analytics data exists, this closes the feedback loop.
 | 3 | Backfill existing Scheduled pins with landing page links | 0.1 | ~1h |
 | 4 | Create angle boards + update board routing in Make | 0.2 | ~1h |
 | 5 | Process Sacred Thread Bamboo Viscose Bed Sheet Set (only remaining Candidate) | 1.2 | ~30m |
-| 6 | Add Distribution DB analytics fields + `analytics_sync.py` | 3.2 | ~3h |
+| 6 | Add Notion fields to Distribution DB + update Make scenario (manual) | 3.2 | ~30m |
 | 7 | Weekly digest script | 4.1 | ~1h |
 | 8 | PA API readiness + apply | 4.2 | ~30m |
 
