@@ -1,6 +1,6 @@
 # Picky Products — Consolidated Plan
 
-**Last updated:** 2026-06-17  
+**Last updated:** 2026-06-18  
 **Source:** Consolidates `llm-council/runs/20260523-analyse-picky-products-and-produce-a-pri/final-plan-clean.md` with W25 analytics findings and Pinterest algorithm research.
 
 ---
@@ -17,7 +17,7 @@
 
 Root cause of the -96% impression drop and 10+ weeks of 0 saves: pins link directly to Amazon affiliate URLs. Pinterest's algorithm classifies this as affiliate spam, suppresses distribution after day 1, and users who click through dwell on Amazon for <30 seconds — a strong negative engagement signal. This phase fixes the structural problem before any optimisation work has value.
 
-### 0.1: Product landing pages on GitHub Pages ⬜
+### 0.1: Product landing pages on GitHub Pages ✅
 
 **Why:** Pinterest favours pins that link to owned content. Landing pages give users a destination with longer dwell time, remove the direct-affiliate-link spam signal, and create a surface for saves.
 
@@ -47,9 +47,11 @@ Done. Tag corrected from `pickyprod-21` → `pickyproducts-21` across all produc
 
 ### 1.2: Process Candidate products 🔄
 
-**Done:** Manta Sleep Mask, Brown Noise Machine, Dreamegg D11, Hydomi, Sleepymoon, Yogasleep Dohm, Color Noise Sound Machine, Cosi Home Pillow, LC-Dolida Sleep Mask, LINENWALAS Bedding Set, Cooling Pillow Shredded Memory Foam *(processed today)*, Bambaw Bamboo Fitted Sheet *(processed today)*.
+**Done:** Manta Sleep Mask, Brown Noise Machine, Dreamegg D11, Hydomi, Sleepymoon, Yogasleep Dohm, Color Noise Sound Machine, Cosi Home Pillow, LC-Dolida Sleep Mask, LINENWALAS Bedding Set, Cooling Pillow Shredded Memory Foam, Bambaw Bamboo Fitted Sheet.
 
-**Remaining:** Archive ~13 non-sleep Candidates (COSORI, Tapo, TidyTrove, Russell Hobbs, Echo Dot, AIDEA, ENJOYBASICS, Aujen, LEMIKKLE, Global Gourmet, Nulaxy, MONSGA, Checkmart) — these inflate the Candidate count and are not in-niche.
+**Non-sleep archive task: complete.** All 13 previously flagged off-niche products (COSORI, Tapo, TidyTrove, Russell Hobbs, Echo Dot, AIDEA, ENJOYBASICS, Aujen, LEMIKKLE, Global Gourmet, Nulaxy, MONSGA, Checkmart) are already at "Published" status — they were processed before the niche pivot. Nothing to archive.
+
+**Remaining Candidate:** Sacred Thread Bamboo Viscose Bed Sheet Set (6 PC) — cooling bedding, in-niche, ready to process.
 
 Queue extends to 2026-08-11 after today's batch.
 
@@ -118,7 +120,7 @@ Once analytics data exists, this closes the feedback loop.
 | 2 | Update `schedule_meta.json` + Make webhook to use landing page URLs | 0.1 | ~1h |
 | 3 | Backfill existing Scheduled pins with landing page links | 0.1 | ~1h |
 | 4 | Create angle boards + update board routing in Make | 0.2 | ~1h |
-| 5 | Archive non-sleep Candidates in Notion | 1.2 | ~30m |
+| 5 | Process Sacred Thread Bamboo Viscose Bed Sheet Set (only remaining Candidate) | 1.2 | ~30m |
 | 6 | Add Distribution DB analytics fields + `analytics_sync.py` | 3.2 | ~3h |
 | 7 | Weekly digest script | 4.1 | ~1h |
 | 8 | PA API readiness + apply | 4.2 | ~30m |

@@ -157,6 +157,22 @@ pins/
 
 ---
 
+## Pin copy
+
+**Format:** Titles max 100 chars — first 40 chars are critical, lead with outcome or specific benefit. Descriptions 150–250 chars; natural keyword integration; reads like something a person would type, not a tag list. Include `#ad` where required.
+
+**Voice:** direct, practical, dry. Benefit-first language with specific functional outcomes ("stays cool all night", "blocks out noise without discomfort"). Knowledgeable friend, not a brand.
+
+**Never:**
+- Append "UK" to product titles — reads as SEO spam
+- Use double dashes (--) — immediate AI tell
+- Overclaim: "game-changer", "life-changing", "revolutionary", "ultimate", "amazing", "perfect for"
+- Claim to cure insomnia, treat anxiety, or guarantee outcomes
+- Keyword stuffing — no "Keywords:" labels, no hashtag walls
+- Generic filler: "perfect for sleep", "great product", "must-have"
+
+---
+
 ## Analytics
 
 Weekly performance reports live in `analytics/`. One file per week, named `YYYY-Www.md` (ISO week, Sunday end date).
