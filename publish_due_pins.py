@@ -111,6 +111,57 @@ def send_to_make(records: list) -> bool:
     return resp.status_code in (200, 201, 202, 204)
 
 
+def check_completed_products(notion_token: str, meta_files: list, now: datetime,
+                              workspace: str, published_ids: set, dry_run: bool = False) -> None:
+    """Sweep every active product (not just ones with a pin due this run) and
+    flip Products DB -> Published + move the folder once all 9 pins are done.
+
+    Runs on every invocation so a product isn't limited to a single chance at
+    the transition — a chance that can be missed by a Notion read-after-write
+    race on the page that was just PATCHed, or a run where nothing was due.
+    `published_ids` short-circuits that race: records this run just marked
+    Published are trusted without a re-GET.
+    """
+    for meta_path in meta_files:
+        slug = os.path.basename(os.path.dirname(meta_path))
+        if not os.path.exists(meta_path):
+            continue
+        with open(meta_path) as f:
+            meta = json.load(f)
+
+        records = meta.get("records", [])
+        if not records:
+            continue
+
+        try:
+            last_pub_dt = datetime.fromisoformat(records[-1]["publish_at"].replace("Z", "+00:00"))
+        except Exception:
+            continue
+        if last_pub_dt > now:
+            continue  # last pin isn't due yet — can't be complete
+
+        all_done = all(
+            r["notion_page_id"] in published_ids
+            or notion_get_status(notion_token, r["notion_page_id"]) == "Published"
+            for r in records
+        )
+        if not all_done:
+            continue
+
+        if dry_run:
+            print(f"  [dry run] {slug} — all 9 published, would move to pins/scheduled/")
+            continue
+
+        notion_set_status(notion_token, meta["product_page_id"], "Published")
+        src = os.path.join(workspace, "pins", slug)
+        dst = os.path.join(workspace, "pins", "scheduled", slug)
+        os.makedirs(os.path.dirname(dst), exist_ok=True)
+        if os.path.exists(dst):
+            shutil.rmtree(dst)
+        shutil.move(src, dst)
+        print(f"\n  ✓ All 9 published → moved to pins/scheduled/{slug}/")
+
+
 # ── Main ───────────────────────────────────────────────────────────────────────
 def main():
     dry_run = "--dry-run" in sys.argv
@@ -179,6 +230,8 @@ def main():
     # ── Report ────────────────────────────────────────────────────────────────
     if not due:
         print("No pins due for publishing right now.\n")
+        check_completed_products(notion_token, meta_files, now, WORKSPACE, published_ids=set())
+        print(f"\nDone.\n")
         return
 
     print(f"Found {len(due)} pin(s) due:\n")
@@ -189,6 +242,8 @@ def main():
 
     if dry_run:
         print("Dry run — nothing sent.\n")
+        check_completed_products(notion_token, meta_files, now, WORKSPACE, published_ids=set(), dry_run=True)
+        print(f"\nDone.\n")
         return
 
     # ── Send to Make ──────────────────────────────────────────────────────────
@@ -214,33 +269,16 @@ def main():
 
     # ── Update Notion ─────────────────────────────────────────────────────────
     print("Updating Notion...")
+    published_ids = set()
     for slug, rec in due:
-        ok   = notion_set_status(notion_token, rec["notion_page_id"])
+        ok = notion_set_status(notion_token, rec["notion_page_id"])
+        if ok:
+            published_ids.add(rec["notion_page_id"])
         mark = "✓" if ok else "✗"
         print(f"  {mark} {rec['title'][:55]}")
 
     # ── Move completed products ───────────────────────────────────────────────
-    slugs = set(s for s, _ in due)
-    for slug in slugs:
-        meta_path = os.path.join(WORKSPACE, "pins", slug, "schedule_meta.json")
-        if not os.path.exists(meta_path):
-            continue
-        with open(meta_path) as f:
-            meta = json.load(f)
-
-        all_done = all(
-            notion_get_status(notion_token, r["notion_page_id"]) == "Published"
-            for r in meta["records"]
-        )
-        if all_done:
-            notion_set_status(notion_token, meta["product_page_id"], "Published")
-            src = os.path.join(WORKSPACE, "pins", slug)
-            dst = os.path.join(WORKSPACE, "pins", "scheduled", slug)
-            os.makedirs(os.path.dirname(dst), exist_ok=True)
-            if os.path.exists(dst):
-                shutil.rmtree(dst)
-            shutil.move(src, dst)
-            print(f"\n  ✓ All 9 published → moved to pins/scheduled/{slug}/")
+    check_completed_products(notion_token, meta_files, now, WORKSPACE, published_ids=published_ids)
 
     print(f"\nDone.\n")
 
