@@ -101,9 +101,30 @@ Generate title, description, and hook for each of the 9 pins (3 angles × 3 pins
 - Natural language, conversational tone
 - Weave in relevant keywords naturally — do not stuff or label them
 - Same tone/hype rules as titles
+- End every description with 2–3 hashtags after `#ad`: pick from the hashtag list below. Do not repeat the same hashtags across all 9 pins — rotate them.
 
-**High-value keywords to use where relevant:**
-`"cooling pillow uk"`, `"sleep accessories uk"`, `"weighted blanket uk"`, `"best sleep products uk"`, `"light sleeper tips"`, `"how to sleep better uk"`, `"anxiety blanket uk"`
+**Keyword strategy — two tiers, both required:**
+
+Tier 1 — broad keywords (use across all products, spread across the 9 pins):
+- `"sleep accessories uk"` — high usage, keep using
+- `"best sleep products uk"` — use in at least 1 description per product
+- `"how to sleep better uk"` — use in at least 1 description per product
+
+Tier 2 — product-category keywords (match to the product type, use in at least 2 pins per product):
+- Cooling/breathable products → `"cooling pillow uk"`, `"cooling bedding uk"`
+- Pillows/support → `"best pillow for sleep uk"`, `"memory foam pillow uk"`
+- Weighted blankets → `"weighted blanket uk"`, `"anxiety blanket uk"`
+- Sound machines → `"white noise machine uk"`, `"sleep sound machine uk"`
+- Sleep masks → `"sleep mask uk"`, `"blackout sleep mask uk"`
+- Bedding/sheets → `"bamboo bedding uk"`, `"cooling bedding uk"`
+- General → `"light sleeper tips"`, `"sleep better uk"`
+
+At least 1 Tier 2 keyword must appear in the titles across the 9 pins. At least 2 must appear in descriptions. Do not use the same keyword in consecutive pins — spread them.
+
+**Hashtag list — pick 2–3 per description, rotate across the 9 pins:**
+`#SleepBetter` `#HotSleeper` `#LightSleeper` `#AnxiousSleeper` `#CoolingSleep` `#SleepAccessories` `#BetterSleep` `#SleepTips` `#UKSleep` `#CoolingBedding` `#WeightedBlanket` `#SleepMask` `#WhiteNoise` `#BambooSleep`
+
+Use angle-appropriate hashtags: Hot Sleeper pins → `#HotSleeper #CoolingSleep`; Light Sleeper → `#LightSleeper #SleepTips`; Anxious/Insomniac → `#AnxiousSleeper #BetterSleep`. Always include `#SleepBetter` or `#SleepAccessories` in at least 3 of the 9 pins.
 
 **Hook text rules:**
 - Short — 3 to 6 words

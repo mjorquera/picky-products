@@ -7,7 +7,7 @@ Picky Products is a Pinterest-focused affiliate marketing side project. The goal
 - **Niche:** Sleep Optimization Accessories (UK buyers)
 - **Audience personas:** hot sleepers, light sleepers, anxious/insomniac sleepers, restless sleepers — select 3 per product based on fit
 - **Distribution:** Pinterest (primary)
-- **Monetisation:** Amazon Associates (UK); PA API pending activation — 3 qualifying sales recorded 2026-05-21, check dashboard to apply
+- **Monetisation:** Amazon Associates (UK); PA API blocked — requires 10 qualifying sales in 30 days (Creators API route). Account is approved. Revisit when sales volume reaches that threshold.
 
 ---
 
@@ -19,7 +19,7 @@ Picky Products is a Pinterest-focused affiliate marketing side project. The goal
 | **Notion** (MCP) | Source of truth for products and distribution data |
 | **Python + Pillow** | Pin image generation (`generate_pins.py`) |
 | **Pinterest API v5** | Pin scheduling via Make (`schedule_via_make.py`, `publish_due_pins.py`) |
-| **Amazon PA API** | Pending activation (3 qualifying sales) |
+| **Amazon PA API** | Blocked — needs 10 qualifying sales in 30 days |
 
 ---
 
@@ -168,7 +168,7 @@ pins/
 - Use double dashes (--) — immediate AI tell
 - Overclaim: "game-changer", "life-changing", "revolutionary", "ultimate", "amazing", "perfect for"
 - Claim to cure insomnia, treat anxiety, or guarantee outcomes
-- Keyword stuffing — no "Keywords:" labels, no hashtag walls
+- Keyword stuffing — no "Keywords:" labels, no hashtag walls (2–3 targeted hashtags are fine; 10+ is not)
 - Generic filler: "perfect for sleep", "great product", "must-have"
 
 ---
@@ -191,9 +191,10 @@ Weekly performance reports live in `analytics/`. One file per week, named `YYYY-
 Active roadmap: `plan.md` in this directory. Ordered by impact — read it before starting work each session.
 
 - **Phase 0:** ✅ Complete — landing pages live, boards split by angle.
-- **Phase 1:** One Candidate remaining — Sacred Thread Bamboo Viscose Bed Sheet Set. Off-niche products already published before niche pivot, nothing to archive.
+- **Phase 1:** ✅ Complete — all Candidates processed, including Sacred Thread Bamboo Viscose Bed Sheet Set (2026-07-01). Queue runs to 2026-08-12.
+- **Phase 2:** 2.3 in progress — keyword/hashtag improvements to process-product skill done; board descriptions still to write manually on Pinterest.
 - **Phase 3:** 3.2 ✅ — `analytics_sync.py` live, Make captures Pin IDs, Cowork syncs weekly. 3.3 (A/B tracking agent) not started.
-- **Phase 4:** Weekly digest script, PA API readiness.
+- **Phase 4:** Weekly digest script. PA API blocked on sales volume.
 
 Original LLM council plan: `llm-council/runs/20260523-analyse-picky-products-and-produce-a-pri/final-plan-clean.md`
 
