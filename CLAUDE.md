@@ -188,7 +188,7 @@ Weekly performance reports live in `analytics/`. One file per week, named `YYYY-
 
 ## Plan
 
-Active roadmap: `plan.md` in this directory. Ordered by impact — read it before starting work each session.
+**Live backlog:** Linear project `Picky Products` (team `Wallmapu`) — see Linear Workflow below. `plan.md` stays as the phase rationale/history doc, not the task tracker — don't add new backlog items there, create a Linear issue instead.
 
 - **Phase 0:** ✅ Complete — landing pages live, boards split by angle.
 - **Phase 1:** ✅ Complete — all Candidates processed, including Sacred Thread Bamboo Viscose Bed Sheet Set (2026-07-01). Queue runs to 2026-08-12.
@@ -213,3 +213,23 @@ Run `/bye` at the end of every working session. The skill reviews the session fo
 - **Nothing is fixed:** All tools and channels remain open to challenge — including strategic direction.
 - **Momentum over perfection:** Manual steps are acceptable short-term trade-offs.
 - **AI-led strategy is welcome:** The niche pivot to Sleep Optimization Accessories came from the CEO agent's analysis. That's the model.
+
+---
+
+## Linear Workflow
+
+**Goal:** Unlock Amazon PA API (10 qualifying sales in 30 days) and grow this into a self-sustaining revenue stream — success is affiliate income, not just pipeline throughput.
+
+**Stack:** see `## Stack` above.
+
+**Backlog:** Linear project `Picky Products` (team `Wallmapu`). Create an issue before starting any work, even small fixes.
+
+**Don't touch without asking:**
+- Notion DB schema/valid values (`Status`, `Angle`) — breaks the pipeline silently if changed
+- `.env` credentials or the Amazon Associates tag (`pickyproducts-21`)
+- Already-scheduled/published pins in `pins/scheduled/`
+- The Make scenario webhook/board-ID mapping
+
+**Coding style:** Move fast, done > perfect. Push directly to main — no PR review needed.
+
+**Prioritisation:** Run `/prioritize-side-projects` any time — scores open issues across all 3 Linear projects by impact vs effort, weighted here as revenue-first.

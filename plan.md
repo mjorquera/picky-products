@@ -1,6 +1,8 @@
 # Picky Products — Consolidated Plan
 
-**Last updated:** 2026-06-18  
+> **Live backlog and status now tracked in Linear** (project `Picky Products`, team `Wallmapu`). This file stays as phase rationale, risk notes, and history — don't add new backlog items here, create a Linear issue instead.
+
+**Last updated:** 2026-06-29  
 **Source:** Consolidates `llm-council/runs/20260523-analyse-picky-products-and-produce-a-pri/final-plan-clean.md` with W25 analytics findings and Pinterest algorithm research.
 
 ---
@@ -67,6 +69,23 @@ Done. `fetch_product_image.py` in place; `/process-product` chains into it autom
 
 Done. `generate_pins.py` renders persona-tinted Template C (clean) and Template B (hook pills) with `#ad` bottom-right. Price sub-line supported via `hooks.json`.
 
+### 2.3: Pinterest SEO — keyword and hashtag improvements 🔄
+
+**Why:** Audit (2026-06-29) found product-category keywords severely underused — `"cooling pillow uk"` appeared once across 171 pins. Generic broad keywords were well covered but product-specific terms weren't. No hashtags beyond `#ad`.
+
+- ✅ Updated `process-product` skill with two-tier keyword system (broad + product-category) and mandatory usage minimums
+- ✅ Added 14-hashtag rotation list, angle-matched, to all future pin descriptions
+- ⬜ Write keyword-rich descriptions for all 5 Pinterest boards (manual, ~20 min on Pinterest directly)
+
+### 2.4: Pin image quality — angle label pill ⬜
+
+**Why:** Current Template C pins (clean, tinted background) have no text beyond the `#ad` label. Adding a persona pill at the bottom ("Hot Sleeper", "Light Sleeper", "Anxious Sleeper") makes the purpose of each pin immediately legible and more visually intentional. Do this after Phase 3.3 data confirms clean pins are underperforming, so the change is data-driven rather than speculative.
+
+- Add a rounded pill (white or angle-tinted) at bottom-centre of Template C with the angle label
+- Match pill style to Template B for visual consistency
+- Update `generate_pins.py` — Template C branch only
+- Backfill is not required; new products will pick it up automatically
+
 ---
 
 ## Phase 3 — Analytics Feedback Loop
@@ -105,9 +124,11 @@ Once analytics data exists, this closes the feedback loop.
 - Add to CLAUDE.md session-open checklist
 - Runs in under 5 seconds
 
-### 4.2: PA API readiness ⬜
+### 4.2: PA API readiness ⬜ — blocked
 
-3 qualifying sales recorded 2026-05-21. Check Amazon Associates dashboard — if the 180-day window applies, apply now.
+**Eligibility:** Amazon's Creators API route requires 10 qualifying sales within the past 30 days. Current count: 3 total (recorded 2026-05-21), none in the last 30 days. Account is active and approved — this is a volume gate, not an account issue.
+
+**When to revisit:** once the dashboard shows 10+ qualifying sales in a rolling 30-day window, apply via the Creators API page (Tools → Product Advertising API). Until then, no action.
 
 - Add `PAAPI_ACCESS_KEY`, `PAAPI_SECRET_KEY`, `PAAPI_PARTNER_TAG` placeholders to `.env`
 - Write `pa_api_check.py`: calls `GetItems` for one ASIN; prints title, price, availability; clear error if credentials empty
@@ -116,15 +137,14 @@ Once analytics data exists, this closes the feedback loop.
 
 ## Prioritised next actions
 
-| # | Action | Phase | Effort |
-|---|---|---|---|
-| 1 | Build product landing page template + generator | 0.1 | ~3h |
-| 2 | Update `schedule_meta.json` + Make webhook to use landing page URLs | 0.1 | ~1h |
-| 3 | Backfill existing Scheduled pins with landing page links | 0.1 | ~1h |
-| 4 | Create angle boards + update board routing in Make | 0.2 | ~1h |
-| 5 | Process Sacred Thread Bamboo Viscose Bed Sheet Set (only remaining Candidate) | 1.2 | ~30m |
-| 6 | Weekly digest script | 4.1 | ~1h |
-| 7 | PA API readiness + apply | 4.2 | ~30m |
+| # | Action | Phase | Effort | Why now |
+|---|---|---|---|---|
+| 1 | ~~Process Sacred Thread Bamboo Viscose Bed Sheet Set~~ ✅ | 1.2 | done | Phase 1 complete |
+| 2 | Hook A/B performance tracking agent | 3.3 | ~3h | Closes the feedback loop; improves copy quality autonomously once impression data exists |
+| 3 | Write keyword-rich Pinterest board descriptions | 2.3 | ~20m | Manual on Pinterest — completes SEO audit actions |
+| 4 | Pin image quality — angle label pill | 2.4 | ~2h | Do after 3.3 confirms clean pins are underperforming |
+| 5 | Weekly digest script | 4.1 | ~1h | Operational — do after pipeline volume justifies it |
+| 6 | PA API | 4.2 | — | Blocked: needs 10 qualifying sales in 30 days |
 
 ---
 
