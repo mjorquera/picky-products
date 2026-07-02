@@ -18,7 +18,7 @@ Run weekly via Cowork scheduled task.
 
 import sys
 import os
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 try:
     import requests
@@ -32,7 +32,7 @@ ENV_PATH        = os.path.join(WORKSPACE, ".env")
 NOTION_API      = "https://api.notion.com/v1"
 PINTEREST_API   = "https://api.pinterest.com/v5"
 DISTRIBUTION_DB = "c7718096-68b1-83ea-8ab2-01b6e3a2b2fe"
-START_DATE      = "2026-01-01"  # beginning of project — effectively lifetime totals
+START_DATE      = (datetime.now(timezone.utc) - timedelta(days=89)).strftime("%Y-%m-%d")  # Pinterest: 90-day limit
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────────

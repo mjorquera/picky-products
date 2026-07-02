@@ -1,0 +1,15 @@
+{
+  "amazon_image_url": "https://m.media-amazon.com/images/I/61jXDC8FyXL._AC_UL320_.jpg",
+  "price": null,
+  "pins": [
+    {"angle": "Hot Sleeper", "hook": null},
+    {"angle": "Hot Sleeper", "hook": "Still sweating at 3am?"},
+    {"angle": "Hot Sleeper", "hook": "Your bed is the problem"},
+    {"angle": "Light Sleeper", "hook": null},
+    {"angle": "Light Sleeper", "hook": "Fabric that doesn't wake you"},
+    {"angle": "Light Sleeper", "hook": "Light sleepers feel everything"},
+    {"angle": "Anxious/Insomniac", "hook": null},
+    {"angle": "Anxious/Insomniac", "hook": "A cooler bed helps"},
+    {"angle": "Anxious/Insomniac", "hook": "Reduce nighttime wake-ups"}
+  ]
+}

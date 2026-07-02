@@ -222,7 +222,7 @@ Run `/bye` at the end of every working session. The skill reviews the session fo
 
 **Stack:** see `## Stack` above.
 
-**Backlog:** Linear project `Picky Products` (team `Wallmapu`). Create an issue before starting any work, even small fixes.
+**Backlog:** Linear project `Picky Products` (team `Wallmapu`). Create an issue before starting any work, even small fixes — including work that's currently blocked (e.g. PA API on sales volume). This workspace has no native "Blocked" status or label — prefix the title with `Blocked:` and state the unblock condition in the description.
 
 **Don't touch without asking:**
 - Notion DB schema/valid values (`Status`, `Angle`) — breaks the pipeline silently if changed
