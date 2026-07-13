@@ -45,7 +45,7 @@ If the auto-download fails (CDN error, missing URL in Notion, or image below 600
 
 **Pinterest boards:** Pins route to angle-specific boards when available. `publish_due_pins.py` derives the board from the pin filename (`pin-N-hot-*` → `PINTEREST_BOARD_HOT`, etc.). Restless Sleeper and any unmatched pins fall back to the catch-all **UK Comfort Products for Sleep** board (`PINTEREST_BOARD_ID`).
 
-**Known issue (flagged 2026-W27, still open 2026-W28):** `PINTEREST_BOARD_HOT` has 0 pins on it — Hot Sleeper pins are landing on the catch-all board instead of their own. No Linear issue tracks this yet; create one before investigating.
+**Known issue (flagged 2026-W27, still open 2026-W28):** `PINTEREST_BOARD_HOT` has 0 pins on it — Hot Sleeper pins are landing on the catch-all board instead of their own. Tracked as Linear WAL-110.
 
 **One-time Make update required:** In the Pinterest "Make an API Call" module, change `"board_id": "1063764443174541558"` → `"board_id": "{{5.board_id}}"`. Each record in the payload now carries its own `board_id`.
 
