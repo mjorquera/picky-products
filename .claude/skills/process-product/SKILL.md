@@ -54,7 +54,10 @@ Query the Products DB using `mcp__notion__API-query-data-source`:
 Extract from the result:
 - `id` — the Notion page ID for the Product record
 - `properties.Affiliate Link.url` — the affiliate link
+- `properties["Product Link"].url` — fallback affiliate link (see below)
 - `properties["Amazon Main Image URL"].url` — the Amazon CDN image URL (may be null — handle gracefully)
+
+**Affiliate Link is frequently empty on freshly-discovered Candidates** — weekly discovery populates `Product Link` (raw `amazon.co.uk/dp/...?tag=...` URL) but not `Affiliate Link` (normally an `amzn.to` short link, added later). The Distribution DB's `Affiliate Link` field is a **rollup from the Product's `Affiliate Link`**, so if it's left null, all 9 Distribution records ship with a null affiliate link. If `Affiliate Link` is empty, use `Product Link` instead and `mcp__notion__API-patch-page` the Product record's `Affiliate Link` field with that value before creating any Distribution records.
 
 **Affiliate link validation:** the correct Amazon Associates tag is `pickyproducts-21`. If the extracted URL contains `pickyprod-21` (no 's'), it is wrong — stop and report the mismatch before creating any Distribution records. If the link is an `amzn.to` short URL, accept it as-is (these resolve correctly).
 
