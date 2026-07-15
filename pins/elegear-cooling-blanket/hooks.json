@@ -1,0 +1,15 @@
+{
+  "amazon_image_url": "https://m.media-amazon.com/images/I/81uRljG6p9L._AC_SL1500_.jpg",
+  "price": "31.06",
+  "pins": [
+    {"angle": "Hot Sleeper", "hook": null},
+    {"angle": "Hot Sleeper", "hook": "Still sleeping hot?"},
+    {"angle": "Hot Sleeper", "hook": "Beat the 3am overheat"},
+    {"angle": "Light Sleeper", "hook": null},
+    {"angle": "Light Sleeper", "hook": "Every degree matters"},
+    {"angle": "Light Sleeper", "hook": "Fewer wake-ups, better mornings"},
+    {"angle": "Restless Sleeper", "hook": null},
+    {"angle": "Restless Sleeper", "hook": "Restless because you're hot?"},
+    {"angle": "Restless Sleeper", "hook": "Stop the midnight blanket kick"}
+  ]
+}

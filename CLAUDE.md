@@ -181,10 +181,18 @@ Weekly performance reports live in `analytics/`. One file per week, named `YYYY-
 
 **Report contents:** Pinterest metrics (from `/pinterest-analytics`), Notion product status snapshot, week-on-week delta vs prior file.
 
+**Pinterest Analytics URL:** always navigate to `https://analytics.pinterest.com/overview/` — not `https://uk.pinterest.com/analytics/`. The latter redirects to the account/business page, not the analytics dashboard, and returns no scrapeable content via Claude in Chrome. Confirmed wrong twice (W28, W29 reports) before switching to the Pinterest API v5 fallback each time.
+
 **Cowork weekly task instruction:**
 > Run `/pinterest-analytics` and analyse performance for the last 7 days. Query the Notion Products DB (`ddf18096-68b1-8219-bb44-01b7fa5c9611`) and count records by Status: Candidate, Processed, Scheduled, Published. Find the most recent file in `analytics/` (excluding `_template.md`) and pull last week's Pinterest metrics for the week-on-week delta. Write a report to `analytics/YYYY-Www.md` using the structure in `analytics/_template.md`. Commit with message `Add weekly analytics YYYY-Www`.
 
 **Resolved (2026-07-01):** Products DB `Published` status not syncing was fixed via Linear issue WAL-5 — `publish_due_pins.py`'s `check_completed_products()` now correctly flips Products DB Status once all 9 Distribution DB pins for a product read Published. Verified 0 mismatches across 44 products as of 2026-07-10.
+
+---
+
+## Dashboard
+
+`control-center.html` (project root) is a self-contained pipeline snapshot — KPI strip, feedback loop tracker (which analytics findings turned into Linear issues vs. which were fixed ad hoc), pipeline health cards, and a pin runway gantt chart. Not auto-generated — refresh it with `/update-dashboard` whenever asked, or after a session that processes products or closes Linear issues. Also mirrored as a claude.ai Artifact for sharing; the skill covers republishing that copy too.
 
 ---
 

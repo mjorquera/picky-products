@@ -1,0 +1,15 @@
+{
+  "amazon_image_url": "https://m.media-amazon.com/images/I/71whU5AGWoL._AC_SL1433_.jpg",
+  "price": null,
+  "pins": [
+    {"angle": "Anxious/Insomniac", "hook": null},
+    {"angle": "Anxious/Insomniac", "hook": "Racing mind at bedtime?"},
+    {"angle": "Anxious/Insomniac", "hook": "Still wide awake at midnight?"},
+    {"angle": "Restless Sleeper", "hook": null},
+    {"angle": "Restless Sleeper", "hook": "Can't stay still at night?"},
+    {"angle": "Restless Sleeper", "hook": "Stop the 2am blanket wrestle"},
+    {"angle": "Light Sleeper", "hook": null},
+    {"angle": "Light Sleeper", "hook": "Every noise wake you up?"},
+    {"angle": "Light Sleeper", "hook": "Light sleeper, heavy thoughts?"}
+  ]
+}
