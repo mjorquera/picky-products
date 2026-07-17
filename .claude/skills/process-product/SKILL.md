@@ -23,6 +23,8 @@ allowed-tools:
 
 Process a Picky Products item end-to-end: generate copy, create Notion distribution records, write `hooks.json`, auto-download the product image, ask for a start date, write `schedule_meta.json` with 1 pin/day scheduling, then automatically run `/generate-pins` if the image was downloaded successfully.
 
+**Before running:** check Linear issue WAL-126 (Amazon Associates account closed 2026-07-17). If still open/blocked, new-Candidate processing is paused — flag this to the user instead of proceeding, unless they explicitly override.
+
 ## Invocation
 
 ```

@@ -7,7 +7,7 @@ Picky Products is a Pinterest-focused affiliate marketing side project. The goal
 - **Niche:** Sleep Optimization Accessories (UK buyers)
 - **Audience personas:** hot sleepers, light sleepers, anxious/insomniac sleepers, restless sleepers — select 3 per product based on fit
 - **Distribution:** Pinterest (primary)
-- **Monetisation:** Amazon Associates (UK); PA API blocked — requires 10 qualifying sales in 30 days (Creators API route). Account is approved. Revisit when sales volume reaches that threshold.
+- **Monetisation:** Amazon Associates (UK) — account `pickyproducts-21` **closed by Amazon 2026-07-17** for zero qualifying sales within 180 days of creation; reapplication tracked in Linear **WAL-126**, blocked pending a Pinterest reach/click fix (root cause: thin distribution, not proven lack of demand). **No new `/process-product` runs until WAL-126 is unblocked.** PA API separately blocked — requires 10 qualifying sales in 30 days (Creators API route); moot until Associates is reinstated.
 
 ---
 
