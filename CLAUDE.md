@@ -1,14 +1,12 @@
 # Picky Products — Project Context
 
-## Status: PAUSED (2026-07-24)
+## Status: ARCHIVED (2026-07-28)
 
-Project is on hold — no further active effort. Decision made after W30 analytics showed no conversions for the week and the account's one reliable converting pin (Dreamegg D+) had gone quiet; see `analytics/2026-W30.md`.
+Project fully stopped and archived. Decision made after W30 analytics showed no conversions for the week and the account's one reliable converting pin (Dreamegg D+) had gone quiet; see `analytics/2026-W30.md`.
 
-**What continues:** the two daily-publisher Cowork tasks (09:00/20:00 UTC) keep running so the remaining already-scheduled pins finish publishing naturally.
+**What stopped (2026-07-28):** Mario manually stopped the daily-publisher Cowork tasks (09:00/20:00 UTC) — no more pins will be sent to Make/Pinterest, so the remaining queue in `pins/scheduled/` (products dated through ~2026-08-21) will not publish. `weekly-product-analytics`, `weekly-product-discovery`, and `run-analytics-sync` scheduled skills (already guarded to no-op since 2026-07-24) plus the `picky-products-daily-publisher`/`-slot-2` skills have been moved to `Claude/Archive/Scheduled/` since the underlying Cowork tasks no longer run them. The Linear project is set to **Canceled**.
 
-**What stopped (2026-07-24):** `weekly-product-analytics`, `weekly-product-discovery`, and `run-analytics-sync` scheduled skills are guarded to no-op — see each `SKILL.md` in `Scheduled/`. No new `/process-product` runs (already frozen pending WAL-126). Dashboard/Linear prioritisation work on this project also stops. The Linear project itself is set to **Canceled** (closest state to "archived" the API exposes).
-
-**Folder archiving:** don't move/archive this project folder yet — the daily-publisher Cowork tasks read from this exact path and still have pins to publish through ~2026-08-21. A one-time cloud routine is scheduled for 2026-08-22 to confirm the queue finished and prompt for folder archiving then (`https://claude.ai/code/routines/trig_01B2GBeLmPcefb28JmCLtDaS`).
+**Folder location:** moved from `Projects/Picky Products/` to `Archive/Picky Products/` on 2026-07-28. The one-time cloud routine previously scheduled for 2026-08-22 to prompt for archiving (`https://claude.ai/code/routines/trig_01B2GBeLmPcefb28JmCLtDaS`) is now moot — archiving happened early — but hasn't been cancelled; if it fires, it will reference the old path and can be ignored/deleted.
 
 **Working hypotheses for why it didn't take off** (unresolved — no single cause confirmed):
 1. Wrong niche — Sleep Optimization Accessories may not have enough Pinterest purchase intent.
