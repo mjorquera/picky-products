@@ -6,7 +6,7 @@ Project fully stopped and archived. Decision made after W30 analytics showed no 
 
 **What stopped (2026-07-28):** Mario manually stopped the daily-publisher Cowork tasks (09:00/20:00 UTC) — no more pins will be sent to Make/Pinterest, so the remaining queue in `pins/scheduled/` (products dated through ~2026-08-21) will not publish. `weekly-product-analytics`, `weekly-product-discovery`, and `run-analytics-sync` scheduled skills (already guarded to no-op since 2026-07-24) plus the `picky-products-daily-publisher`/`-slot-2` skills have been moved to `Claude/Archive/Scheduled/` since the underlying Cowork tasks no longer run them. The Linear project is set to **Canceled**.
 
-**Folder location:** moved from `Projects/Picky Products/` to `Archive/Picky Products/` on 2026-07-28. The one-time cloud routine previously scheduled for 2026-08-22 to prompt for archiving (`https://claude.ai/code/routines/trig_01B2GBeLmPcefb28JmCLtDaS`) is now moot — archiving happened early — but hasn't been cancelled; if it fires, it will reference the old path and can be ignored/deleted.
+**Folder location:** moved from `Projects/Picky Products/` to `Archive/Picky Products/` on 2026-07-28. The one-time cloud routine previously scheduled for 2026-08-22 to prompt for archiving (`https://claude.ai/code/routines/trig_01B2GBeLmPcefb28JmCLtDaS`) has been disabled since archiving already happened. The routine itself can't be deleted via API — only through the web UI — but disabling stops it firing.
 
 **Working hypotheses for why it didn't take off** (unresolved — no single cause confirmed):
 1. Wrong niche — Sleep Optimization Accessories may not have enough Pinterest purchase intent.
